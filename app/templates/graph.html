@@ -1,0 +1,108 @@
+<link rel="stylesheet" href="styles/alchemy.css">
+<div id="graphcontain">
+  <textarea name="weaver" id="weaver" rows="4" cols="120" data-lang="cypher" class="code form-control">
+phone
+  </textarea>
+  <button ng-click="queryGraph()">Exec</button>
+  <!-- <i class="fa fa-play-circle-o"></i> -->
+</div>
+
+<div class="modal fade" id="myModalNode" tabindex="-1" role="dialog" aria-labelledby="myModalNodeLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalNodeLabel">Node Add Interface</h4>
+      </div>
+      <div class="modal-body">
+       
+  <form id="modalFormNode">
+  <div class="form-group">
+    <div class="col-xs-6">
+      <input type="email" class="form-control keyVal" value="handle" disabled>
+    </div>
+    <div class="col-xs-6">
+      <input type="email" class="form-control keyVal" placeholder="Value"required>
+    </div>
+    </div>
+</form>
+<button class="btn btn-default" ng-click="addKeyValNode()">Add Key Value Pair</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="AddNodes()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalNode">
+  Launch demo modal
+</button>
+<div class="modal fade" id="myModalEdge" tabindex="-1" role="dialog" aria-labelledby="myModalEdgeLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalEdgeLabel">Edge Add Interface</h4>
+      </div>
+      <div class="modal-body">
+       
+  <form id="modalFormEdge">
+  <div class="form-group">
+    <div class="col-xs-6">
+      <input type="email" class="form-control keyVal" value="source" disabled>
+    </div>
+    <div class="col-xs-6">
+      <input type="email" class="form-control keyVal" placeholder="Value"required>
+    </div>
+    </div>
+    <div class="form-group">
+    <div class="col-xs-6">
+      <input type="email" class="form-control keyVal" value="target" disabled>
+    </div>
+    <div class="col-xs-6">
+      <input type="email" class="form-control keyVal" placeholder="Value"required>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <div class="col-xs-6">
+      <input type="email" class="form-control keyVal" value="handle" disabled>
+    </div>
+    <div class="col-xs-6">
+      <input type="email" class="form-control keyVal" placeholder="Value"required>
+    </div>
+    </div>
+
+</form>
+<button class="btn btn-default" ng-click="addKeyValEdge()">Add Key Value Pair</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="AddEdges()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalEdge">
+  Launch demo modal Edge
+</button>
+<button id='testNode' ng-click="queryGraph()"> Click here Dude</button>
+<div class="alchemy" id="graph"></div>
+<script src="scripts/d3/d3.js"></script>
+<script src="scripts/lodash/distA/lodash.compat.js"></script>
+<script src="scripts/alchemyN.js"></script>
+
+<script type="text/javascript">
+function addNode()
+{
+  var grace =[{"id": 1, "firstName": "Grace","root":true},{"id": 2, "firstName": "Grace"}];
+  alchemy.create.nodes(grace);
+  var someEdgeMap = [{"source": 1, "target": 2},{"source": 3291718232288820, "target": 1}];
+  alchemy.create.edges(someEdgeMap);
+}
+</script>

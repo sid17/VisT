@@ -1,0 +1,9 @@
+.CodeMirror, .CodeMirror-scroll {
+  height:auto;
+}
+#execute {
+   font-size:30px;
+   position:absolute;
+   top: 0.6em;
+   right: 10em;
+}
