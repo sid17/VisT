@@ -18,24 +18,26 @@ angular.module('visualisationTool')
     $scope.queryGraph=function()
     {
       var input=document.getElementById('weaver').value;
-      console.log(input);
-      console.log(StartGraph);
       config=$scope.config;
       config.dataSource=StartGraph;
-      console.log(config);
+      document.getElementById('nodeModalButton').style.display='block';
+      document.getElementById('edgeModalButton').style.display='block';
       alchemy = new Alchemy(config);
     }
 
     $scope.initAlchemyConfig= function (config,graphId) {
 		config.divSelector="#"+graphId;
 		config.edgeTypes = "caption";
-		alchemy = new Alchemy({divSelector:"#"+graphId,graphHeight: function(){ return window.innerHeight-100 },});
-		return config;
+    // document.getElementById('myModalNode').style.display='none';
+    // document.getElementById('myModalEdge').style.display='none';
+		// alchemy = new Alchemy({divSelector:"#"+graphId,graphHeight: function(){ return window.innerHeight-100 },});
+		alchemy = new Alchemy(config);
+    return config;
 	};
 
   $scope.addKeyValNode=function()
   {
-    var text='<div class="form-group"><div class="col-xs-6"><input type="email" data-identity="added" class="form-control keyVal Added" placeholder="Key"> </div><div class="col-xs-6"><input type="email" data-identity="added" class="form-control keyVal Added" placeholder="Value"></div></div>';
+    var text='<div class="form-group"><div class="col-xs-6"><input  data-identity="added" class="form-control keyVal Added" placeholder="Key"> </div><div class="col-xs-6"><input  data-identity="added" class="form-control keyVal Added" placeholder="Value"></div></div>';
     var d = document.createElement('div');
     d.innerHTML = text;
     var element=d.firstChild;
@@ -45,29 +47,24 @@ angular.module('visualisationTool')
 
   $scope.addPopOver=function(elem)
   {
-     str="";
-     img="";
-     dict=elem;
+     var str="";
+     var img="";
+     var dict=elem;
      for (var key in dict)
      {
         str=str+key+" : "+dict[key]+"<br>";
         if (key=='mediapath')
         {
           url='http://d1rygkc2z32bg1.cloudfront.net/'+dict[key];
-          console.log(url);
           img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
-
         }
         else if (key=='handle' || key=='labels')
         {
           img=img+key+" : "+dict[key]+"<br>";
-          
         }
      }
-      // console.log(d3Nodes[iterate]);
-      UID='node-'+elem['id'];
+      var UID='node-'+elem['id'];
       elem=document.getElementById(UID);
-      //console.log(elem);
       $(elem).popover
       ({
         'show': true,
@@ -102,17 +99,14 @@ angular.module('visualisationTool')
         }
     }
     var edge=JSON.parse(JSON.stringify(jsonObj));
-    console.log(edge);
     alchemy.create.edges(edge);
 
-  document.getElementById('modalFormEdge').innerHTML='<div class="form-group"><div class="col-xs-6"><input type="email" class="form-control keyVal" value="node" disabled></div><div class="col-xs-6"><input type="email" class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input type="email" class="form-control keyVal" value="edge" disabled></div><div class="col-xs-6"><input type="email" class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input type="email" class="form-control keyVal" value="handle" disabled></div><div class="col-xs-6"><input type="email" class="form-control keyVal" placeholder="Value"required></div></div>'
-  console.log(jsonObj);
+  document.getElementById('modalFormEdge').innerHTML='<div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="node" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="edge" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="handle" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div>'
   };
   $scope.AddNodes=function()
   {
     var jsonObj = {};
     var x=document.getElementById('modalFormNode').getElementsByClassName('keyVal');
-    console.log(x);
     for (var i=0;i<x.length;i++)
     {
       if (i%2==0)
@@ -124,13 +118,13 @@ angular.module('visualisationTool')
     jsonObj['root']=true;
     var node=JSON.parse(JSON.stringify(jsonObj));
     alchemy.create.nodes(node);
-    document.getElementById('modalFormNode').innerHTML='<div class="form-group"><div class="col-xs-6"><input type="email" class="form-control keyVal" value="handle" disabled></div><div class="col-xs-6"><input type="email" class="form-control keyVal" placeholder="Value"required></div></div>'
+    document.getElementById('modalFormNode').innerHTML='<div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="handle" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div>'
     $scope.addPopOver(jsonObj);
   };
  
   $scope.addKeyValEdge=function()
   {
-    var text='<div class="form-group"><div class="col-xs-6"><input type="email" data-identity="added" class="form-control keyVal Added" placeholder="Key"> </div><div class="col-xs-6"><input type="email" class="form-control keyVal Added" data-identity="added" placeholder="Value"></div></div>';
+    var text='<div class="form-group"><div class="col-xs-6"><input  data-identity="added" class="form-control keyVal Added" placeholder="Key"> </div><div class="col-xs-6"><input  class="form-control keyVal Added" data-identity="added" placeholder="Value"></div></div>';
     var d = document.createElement('div');
     d.innerHTML = text;
     var element=d.firstChild;
@@ -143,5 +137,4 @@ angular.module('visualisationTool')
   }
   	$scope.editor=$scope.createEditor('weaver');
   	$scope.config = $scope.initAlchemyConfig(config,'graph');
-  	console.log($scope.config);
   }]);

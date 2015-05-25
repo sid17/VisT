@@ -3,7 +3,6 @@
   <textarea name="weaver" id="weaver" rows="4" cols="120" data-lang="cypher" class="code form-control">
 phone
   </textarea>
-  <button ng-click="queryGraph()">Exec</button>
   <!-- <i class="fa fa-play-circle-o"></i> -->
 </div>
 
@@ -19,10 +18,10 @@ phone
   <form id="modalFormNode">
   <div class="form-group">
     <div class="col-xs-6">
-      <input type="email" class="form-control keyVal" value="handle" disabled>
+      <input  class="form-control keyVal" value="handle" disabled>
     </div>
     <div class="col-xs-6">
-      <input type="email" class="form-control keyVal" placeholder="Value"required>
+      <input  class="form-control keyVal" placeholder="Value"required>
     </div>
     </div>
 </form>
@@ -30,14 +29,14 @@ phone
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" ng-click="AddNodes()">Save changes</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="AddNodes()">Save changes</button>
       </div>
     </div>
   </div>
 </div>
 
 
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalNode">
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalNode" style="display:none" id="nodeModalButton" >
   Launch demo modal
 </button>
 <div class="modal fade" id="myModalEdge" tabindex="-1" role="dialog" aria-labelledby="myModalEdgeLabel" aria-hidden="true">
@@ -52,27 +51,27 @@ phone
   <form id="modalFormEdge">
   <div class="form-group">
     <div class="col-xs-6">
-      <input type="email" class="form-control keyVal" value="source" disabled>
+      <input  class="form-control keyVal" value="source" disabled>
     </div>
     <div class="col-xs-6">
-      <input type="email" class="form-control keyVal" placeholder="Value"required>
+      <input  class="form-control keyVal" placeholder="Value"required>
     </div>
     </div>
     <div class="form-group">
     <div class="col-xs-6">
-      <input type="email" class="form-control keyVal" value="target" disabled>
+      <input  class="form-control keyVal" value="target" disabled>
     </div>
     <div class="col-xs-6">
-      <input type="email" class="form-control keyVal" placeholder="Value"required>
+      <input  class="form-control keyVal" placeholder="Value"required>
     </div>
     </div>
 
     <div class="form-group">
     <div class="col-xs-6">
-      <input type="email" class="form-control keyVal" value="handle" disabled>
+      <input  class="form-control keyVal" value="handle" disabled>
     </div>
     <div class="col-xs-6">
-      <input type="email" class="form-control keyVal" placeholder="Value"required>
+      <input  class="form-control keyVal" placeholder="Value"required>
     </div>
     </div>
 
@@ -88,7 +87,7 @@ phone
 </div>
 
 
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalEdge">
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalEdge" style="display:none" id="edgeModalButton">
   Launch demo modal Edge
 </button>
 <button id='testNode' ng-click="queryGraph()"> Click here Dude</button>

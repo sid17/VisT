@@ -50,7 +50,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       if (x[i].childNodes.length>1 )
       {
       x[i].childNodes[1].disabled = true;
-      console.log(x[i].childNodes[1].value);
+      // console.log(x[i].childNodes[1].value);
       }
     }
   };
@@ -65,7 +65,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     {
       if (x[i].childNodes.length>1 )
       {
-        console.log(x[i].childNodes[1].id);
+        // console.log(x[i].childNodes[1].id);
         if (x[i].childNodes[1].id=='props-id')
         {
           iden=x[i].childNodes[1].value
@@ -781,6 +781,16 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       init: function() {
         var divSelector;
         if (this.dashIsShown()) {
+          var x=document.getElementById('control-dash-wrapper');
+          // console.log(x);
+          if (!x)
+          {
+          ;
+          }
+          else
+          {
+            x.parentNode.removeChild(x);
+          }
           divSelector = a.conf.divSelector;
           a.dash = d3.select("" + divSelector).append("div").attr("id", "control-dash-wrapper").attr("class", "col-md-4 initial");
           a.dash.append("i").attr("id", "dash-toggle").attr("class", "fa fa-flask col-md-offset-12");
@@ -793,6 +803,8 @@ function WeaverNodeEditor(n,propsArray,category,Id)
           a.controlDash.stats();
           a.controlDash.clustering();
           return a.controlDash.exports();
+
+          
         }
       },
       search: function() {
@@ -864,7 +876,8 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       dashIsShown: function() {
         var conf;
         conf = a.conf;
-        return conf.showEditor || conf.captionToggle || conf.toggleRootNodes || conf.removeElement || conf.clusterControl || conf.nodeStats || conf.edgeStats || conf.edgeFilters || conf.nodeFilters || conf.edgesToggle || conf.nodesToggle || conf.search || conf.exportSVG;
+        return conf.showControlDash;
+        // return conf.showEditor || conf.captionToggle || conf.toggleRootNodes || conf.removeElement || conf.clusterControl || conf.nodeStats || conf.edgeStats || conf.edgeFilters || conf.nodeFilters || conf.edgesToggle || conf.nodesToggle || conf.search || conf.exportSVG;
       }
     };
   };
@@ -1104,7 +1117,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     return {
       edgeClick: function(d) {
         var propsArray = ["source","target", "handle","id"];
-        console.log(d);
+        // console.log(d);
         WeaverNodeEditor(d,propsArray,'edge',d.id);
 
         var edge;
@@ -1142,23 +1155,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         }
       },
       nodeMouseOver: function(n) {
-
-        // var content='Random Stuff';
-        // var UID='node-'+n.id;
-        // elem=document.getElementById(UID);
-        // // console.log(elem);
-        // // // var jelm = $(elm);//convert to jQuery Element
-        
-        // // console.log(UID);
-        // $(elem).popover
-        // ({
-        //   'show': true,
-        //   'trigger': 'hover',
-        //       'placement': 'bottom',
-        //       'content': content,
-        // });
-        // $(elem).popover('show');
-        // console.log(n);
         var node;
         node = n.self;
         if (node._state !== "hidden") {
@@ -1626,7 +1622,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
               if (key=='mediapath')
               {
                 url='http://d1rygkc2z32bg1.cloudfront.net/'+dict[key];
-                console.log(url);
+                // console.log(url);
                 img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
 
               }
@@ -1776,7 +1772,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     var a;
     a = instance;
     return function() {
-      console.log('changginh');
+      // console.log('changginh');
       a.generateLayout();
       a._drawEdges.createEdge(a.elements.edges.d3);
       // console.log(a.elements.nodes.d3);
