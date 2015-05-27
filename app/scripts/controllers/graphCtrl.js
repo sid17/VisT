@@ -17,12 +17,27 @@ angular.module('visualisationTool')
 
     $scope.queryGraph=function()
     {
-      var input=document.getElementById('weaver').value;
-      config=$scope.config;
-      config.dataSource=StartGraph;
-      document.getElementById('nodeModalButton').style.display='block';
-      document.getElementById('edgeModalButton').style.display='block';
-      alchemy = new Alchemy(config);
+      // var input=document.getElementById('weaver').value;
+      var weaverGraphEndpoint = 'http://52.25.65.189:8000/graph/getNode/';
+
+        $.getJSON(weaverGraphEndpoint, 
+          {
+              query: 'phone',
+              number: 100,
+              overwrite:'1',
+              directionVal: 'F'
+          }, 
+          function(data) 
+          {
+              console.log(data);
+              var config=$scope.config;
+              config.dataSource=data;
+              document.getElementById('nodeModalButton').style.display='block';
+              document.getElementById('edgeModalButton').style.display='block';
+              alchemy = new Alchemy(config);
+              return false;
+          });
+
     }
 
     $scope.initAlchemyConfig= function (config,graphId) {
@@ -134,6 +149,29 @@ angular.module('visualisationTool')
   $scope.addMoreNodes=function(input)
   {
     console.log(input);
+    var weaverGraphEndpoint = 'http://52.25.65.189:8000/graph/getNode/';
+    $.getJSON(weaverGraphEndpoint, 
+      {
+          query: input,
+          number: 10,
+          overwrite:'0',
+          directionVal:'B'
+      },function(data) 
+      {
+        // var config=$scope.config;
+        // console.log(config);
+        // config.dataSource=data;
+        // alchemy = new Alchemy(config);
+        // return false;
+
+        alchemy.create.nodes(data['nodes']);
+        alchemy.create.edges(data['edges']);
+        console.log(typeof data['nodes']);
+        console.log(data['nodes']);
+
+
+
+      });
   }
   	$scope.editor=$scope.createEditor('weaver');
   	$scope.config = $scope.initAlchemyConfig(config,'graph');

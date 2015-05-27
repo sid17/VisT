@@ -16,7 +16,7 @@ var config = {
   captionToggle: true,
   edgesToggle: true,
   nodesToggle: true,
-  nodeOverlap:100,
+  nodeOverlap:70,
   zoomControls: true,
   curvedEdges:false,
   forceLocked : false,
