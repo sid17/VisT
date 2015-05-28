@@ -32,10 +32,11 @@ angular.module('visualisationTool')
           type: 'error'
       });
         }
-        // $location.path('/');
       },
       function (error) {
-        alert('Error in updation to Backend'+error);
+        ngNotify.set('An error was encountered to push the chages to the server, Error type:'+error, {
+          type: 'error'
+      });
         $scope.error = error;
       }
     );
