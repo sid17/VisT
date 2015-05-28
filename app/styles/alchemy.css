@@ -195,8 +195,8 @@ defs #arrow path {
 }
 
 #zoom-controls {
-  background-color: transparent;
-  background-image: url("images/maze-black.png");
+  background-color: #428bca;
+  /*background-image: url("images/maze-black.jpg");*/
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
   box-shadow: 0 0 5px rgba(255,255,255,0.3);
@@ -213,18 +213,19 @@ defs #arrow path {
   padding: 12px;
   margin: 0;
   width: 100%;
+  background-color:#428bca;
 }
 
 #zoom-controls #zoom-in i,
 #zoom-controls #zoom-out i,
 #zoom-controls #zoom-reset i {
-  color: #E89619;
+  color: #ffffff;
 }
 
 #zoom-controls #zoom-in:hover,
 #zoom-controls #zoom-out:hover,
 #zoom-controls #zoom-reset:hover {
-  background-color: rgba(255,255,255,0.2);
+  /*background-color: rgba(255,255,255,0.2);*/
 }
 
 #zoom-controls #zoom-in:active,
@@ -237,7 +238,7 @@ defs #arrow path {
 .fa-caret-down,
 .fa-search {
   margin: 0 5px;
-  color: #E89619;
+  color: white;
 }
 
 #search {
@@ -252,10 +253,10 @@ defs #arrow path {
 }
 
 #search input {
-  background-color: black;
+  background-color: white;
   border: none;
   font-size: 20px;
-  color: white;
+  color: black;
   padding-left: 0.5em;
 }
 
@@ -269,7 +270,7 @@ defs #arrow path {
 #stats {
   padding: 0.5em 1em;
   background-color: transparent;
-  border-bottom: thin dashed #E89619;
+  border-bottom: thin dashed #ffffff;
 }
 
 #stats #stats-header {
@@ -311,7 +312,7 @@ defs #arrow path {
 #stats #node-stats-graph .no-data,
 #stats #edge-stats-graph .no-data {
   margin: 30px 0;
-  color: #E89619;
+  color: #ffffff;
 }
 
 #stats .badge {
@@ -323,7 +324,7 @@ defs #arrow path {
 #editor {
   padding: 0.5em 1em;
   background-color: transparent;
-  border-bottom: thin dashed #E89619;
+  border-bottom: thin dashed #ffffff;
 }
 
 #editor h3 {
@@ -353,7 +354,7 @@ defs #arrow path {
 #editor #element-options #add-property-form #add-property #add-prop-value {
   border: thin rgba(255,255,255,0.2) solid;
   border-left: none;
-  background-color: black;
+  background-color: #428bca;
   color: white;
   width: 100%;
   border-top-left-radius: 0;
@@ -367,7 +368,7 @@ defs #arrow path {
   cursor: default;
   background: #2E2E2E;
   border: thin transparent solid;
-  color: #E89619;
+  color: #ffffff;
   border-right: none;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
@@ -375,12 +376,12 @@ defs #arrow path {
 
 #editor #element-options input[type="submit"],
 #editor #element-options #update-properties {
-  color: #E89619;
+  color: #ffffff;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
   width: auto;
   background: rgba(255,255,255,0.1);
-  border: thin solid #E89619;
+  border: thin solid #ffffff;
   text-align: center;
 }
 
@@ -430,7 +431,7 @@ defs #arrow path {
 }
 
 #editor #editor-interactions.active {
-  color: #E89619;
+  color: #ffffff;
 }
 
 #editor #editor-interactions.inactive {
@@ -457,20 +458,23 @@ defs #arrow path {
 }
 
 #control-dash-wrapper.initial #dash-toggle {
-  color: #E89619;
+  color: #ffffff;
   -webkit-animation: 4s pulse linear;
   animation: 4s pulse linear;
 }
 
 #control-dash-wrapper.off-canvas {
+
   -webkit-transform: translate(-100%, 0);
   transform: translate(-100%, 0);
   -webkit-animation: slide-out .75s linear;
   animation: slide-out .75s linear;
+  
+
 }
 
 #control-dash-wrapper.off-canvas #dash-toggle {
-  color: #E89619;
+  color: #ffffff;
   -webkit-animation: 4s pulse linear;
   animation: 4s pulse linear;
 }
@@ -478,6 +482,7 @@ defs #arrow path {
 #control-dash-wrapper.on-canvas {
   -webkit-animation: slide-in .75s ease-in-out;
   animation: slide-in .75s ease-in-out;
+  
 }
 
 #control-dash-wrapper.on-canvas * {
@@ -485,11 +490,11 @@ defs #arrow path {
 }
 
 #control-dash-wrapper.on-canvas #dash-toggle {
-  color: rgba(232,150,25,0.6);
+  color: #ffffff;
 }
 
 #control-dash-wrapper.on-canvas #dash-toggle:hover {
-  color: #E89619;
+  color: white;
   -webkit-animation: 4s pulse linear;
   animation: 4s pulse linear;
 }
@@ -497,8 +502,8 @@ defs #arrow path {
 #control-dash-wrapper #control-dash {
   overflow-x: hidden;
   overflow-y: scroll;
-  background-color: transparent;
-  background-image: url("images/maze-black.png");
+  background-color: #428bca;
+  /*background-image: url("images/maze-black.jpg");*/
   padding: 0;
   height: inherit;
   z-index: 5;
@@ -511,8 +516,9 @@ defs #arrow path {
 
 #control-dash-wrapper #dash-toggle {
   z-index: 5;
-  background-color: transparent;
-  background-image: url("images/maze-black.png");
+  cursor: pointer;
+  background-color: #428bca;
+  /*background-image: url("images/maze-black.jpg");*/
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
   box-shadow: 0 0 5px rgba(255,255,255,0.3);
@@ -525,9 +531,9 @@ defs #arrow path {
 }
 
 #control-dash-wrapper button {
-  border-radius: 0;
+  border-radius: 3;
   border: none;
-  background-color: transparent;
+  background-color: #5cb85c;
 }
 
 #control-dash-wrapper button:active {
@@ -553,7 +559,7 @@ defs #arrow path {
   padding: 0.5em 1em;
   cursor: pointer;
   color: white;
-  border-bottom: thin dashed #E89619;
+  border-bottom: thin dashed #ffffff;
 }
 
 #clustering #cluster_control_header,
@@ -574,7 +580,7 @@ defs #arrow path {
 #filters {
   padding: 0.5em 1em;
   background-color: transparent;
-  border-bottom: thin dashed #E89619;
+  border-bottom: thin dashed #ffffff;
   color: white;
 }
 
@@ -712,3 +718,6 @@ defs #arrow path {
   font-weight: 200;
   text-anchor: middle;
 }
+
+
+

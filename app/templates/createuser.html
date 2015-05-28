@@ -1,0 +1,16 @@
+<!-- build:css(.tmp) styles/createuser.css -->
+<link rel="stylesheet" href="styles/createuser.css">
+<!-- endbuild -->
+<!-- build:js({.tmp,app}) scripts/lib/pwstrength.js -->
+<script src="scripts/lib/pwstrength.js"></script>
+<!-- endbuild -->
+<p class="text-danger" ng-show="registerError">{{ registerError }}</p>
+
+<form ng-cloak ng-if="!user" ng-init="loadPasswordChecker()" class="form-signin" role="form" ng-submit='register(user)'>
+
+  <h2 class="form-signin-heading" style="color:white">Create New User</h2>
+  <input type="email" class="form-control" ng-model="user.email" placeholder="Email address" required="" autofocus="">
+  <input type="password" class="form-control" ng-model="user.password" placeholder="Password" required="">
+  <button class="btn btn-lg btn-primary btn-block">Register</button>
+</form>
+

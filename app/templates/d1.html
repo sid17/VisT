@@ -1,18 +1,13 @@
-<style>
-.fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 87px;
-  background-color: white;
-  height: 100%;
-  z-index:500;
-}
-</style>
-<div class='fixed'>
-    
+
+<link rel="stylesheet" href="styles/alchemy.css">
+<div id="graphcontain">
+  <textarea name="weaver" id="weaver" rows="4" cols="120" data-lang="cypher" class="code form-control">
+phone
+  </textarea>
+  <i class="fa fa-play-circle-o"></i>
 </div>
-<div class="modal fade" id="myModalNode" tabindex="-1" role="dialog" aria-labelledby="myModalNodeLabel" aria-hidden="true" style="z-index:999999">
+
+<div class="modal fade" id="myModalNode" tabindex="-1" role="dialog" aria-labelledby="myModalNodeLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -35,14 +30,17 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" ng-click="AddNodes()">Save changes</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="AddNodes()">Save changes</button>
       </div>
     </div>
   </div>
 </div>
 
 
-<div class="modal fade" id="myModalEdge" tabindex="-1" role="dialog" aria-labelledby="myModalEdgeLabel" aria-hidden="true" style="z-index:999999">
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalNode" style="display:none" id="nodeModalButton" >
+  Launch demo modal
+</button>
+<div class="modal fade" id="myModalEdge" tabindex="-1" role="dialog" aria-labelledby="myModalEdgeLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -90,56 +88,23 @@
 </div>
 
 
-
-
-
-<link rel="stylesheet" href="styles/alchemy.css">
-
-<div class="container">
-    <div class="row row-no-padding">
-        <div class="col-md-12" style="background-color:white">
-            <div class="row row-no-padding">
-                <div class="col-xs-11">
-                    <div id="graphcontain">
-                      <textarea name="weaver" id="weaver" rows="4" cols="120" data-lang="cypher" class="code form-control">search:phone,direction:F,limit:10
-                       </textarea>
-  <!-- <button ng-click="queryGraph()">Exec</button> -->
-  <!-- <i class="fa fa-play-circle-o"></i> -->
-                    </div>
-                </div>
-                <div class="col-xs-1 nopadding" >
-
-    <button class="btn btn-primary" id='testNode' ng-click="queryGraph()"> <i class="glyphicon glyphicon-play" ></i>Run</button>
-                </div>
-            </div>
-            <div class="panel panel-primary">
-
-                <div class="panel-heading" >
-                    <button class="btn btn-success" type="button">
-                      NodeType
-                    </button>
-                <div class="btn-group" id="nodeBadgeLoc">
-                    
-                </div>
-                <br>
-                </div>
-                <div class="panel-body col-md-12 nopadding">
-                    <div class="alchemy" id="graph"></div>
-                </div>
-                <div class="panel-footer ">
-                    <!-- <button type="button" class="btn btn-success">
-                        Publish</button> -->
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModalNode" id="nodeModalButton">Add Node</button>
-
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModalEdge" id="edgeModalButton">Add Edge</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalEdge" style="display:none" id="edgeModalButton">
+  Launch demo modal Edge
+</button>
+<button id='testNode' ng-click="queryGraph()"> Click here Dude</button>
+<div style="height:50px;background-color:red"></div>
+<div class="alchemy" id="graph"></div>
+<div style="height:50px;background-color:red"></div>
 <script src="scripts/d3/d3.js"></script>
 <script src="scripts/lodash/distA/lodash.compat.js"></script>
 <script src="scripts/alchemyN.js"></script>
+
+<script type="text/javascript">
+function addNode()
+{
+  var grace =[{"id": 1, "firstName": "Grace","root":true},{"id": 2, "firstName": "Grace"}];
+  alchemy.create.nodes(grace);
+  var someEdgeMap = [{"source": 1, "target": 2},{"source": 3291718232288820, "target": 1}];
+  alchemy.create.edges(someEdgeMap);
+}
+</script>

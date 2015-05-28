@@ -1,14 +1,5 @@
 'use strict';
 
-/**
- * @ngdoc overview
- * @name visTApp
- * @description
- * # visTApp
- *
- * Main module of the application.
- */
-angular
   .module('visTApp', [
     'ngAnimate',
     'ngCookies',
@@ -31,3 +22,4 @@ angular
         redirectTo: '/'
       });
   });
+app.constant('API_SERVER', 'http://127.0.0.1:5000/api/');

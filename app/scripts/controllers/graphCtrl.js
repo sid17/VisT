@@ -1,8 +1,172 @@
 'use strict';
 
 angular.module('visualisationTool')
-  .controller('graphCtrl', ['$scope', '$http', function ($scope, $http) {
-  	$scope.createEditor = function (sourceId) 
+  .controller('graphCtrl', ['$scope', '$http','$rootScope', '$window','AuthService','$location','ngNotify',function ($scope, $http,$rootScope,$window,AuthService,$location,ngNotify) {
+  	
+    $rootScope.logout = function () {
+      // console.log('Logout Called');
+      AuthService.logout().then(
+      function () {
+        $location.path('/');
+      },
+      function (error) {
+        $scope.error = error;
+      }
+    );
+  };
+
+  $rootScope.writeToLog = function (query) 
+  {
+      $rootScope.queryContents=query
+      query=JSON.stringify(query);
+      console.log(query);
+      AuthService.submitToLog().then(
+      function (retVal) {
+        if (retVal && retVal.data.status && retVal.data.status=='success')
+        {
+          ngNotify.set('Your Changes were successfully pushed',{type:'success'});
+        }
+        else
+        {
+          ngNotify.set('Changes Not Pushed, Please Log In', {
+          type: 'error'
+      });
+        }
+        // $location.path('/');
+      },
+      function (error) {
+        alert('Error in updation to Backend'+error);
+        $scope.error = error;
+      }
+    );
+  };
+
+$scope.EditPropertyHandlerIm=function(category,Id)
+{
+  document.getElementById('EditProps').style.display='none';
+    if (category!='node')
+      document.getElementById('DeleteProps').style.display='none';
+    document.getElementById('SubmitProps').style.display='block';
+    var x=document.getElementById('editForm').childNodes;
+
+    for (var i=0;i<x.length;i++)
+    {
+
+      if (x[i].childNodes.length>1 )
+        if (x[i].childNodes[2].id!='props-id')
+        {
+         document.getElementById(x[i].childNodes[2].id).disabled = false;
+        }
+    }
+};
+
+$scope.EditPropertyHandler = function(category,Id)
+{
+  document.getElementById('SubmitProps').style.display='none';
+    var x=document.getElementById('editForm').childNodes;
+    var jsonObj={};
+    var iden;
+    var src;
+    var dst;
+    var dataCategory;
+    for (var i=0;i<x.length;i++)
+    {
+      if (x[i].childNodes.length>1 )
+      {
+      dataCategory=$(x[i]).data("category");
+      // console.log(dataCategory);
+      x[i].childNodes[2].disabled = true;
+      var val=x[i].childNodes[2].value;
+      var id=(x[i].childNodes[2].id).substring(6,(x[i].childNodes[2].id).length);
+      if (dataCategory=='node')
+      {
+        if (id=='id')
+        {
+          iden=val;
+        }
+        else
+        {
+          jsonObj[id]=val;
+        }
+      }
+      else
+      {
+        if (id=='source')
+        {
+          src=val;
+        }
+        else if (id=='target')
+        {
+          dst=val;
+        }
+        else
+        {
+          jsonObj[id]=val;
+        }
+      }
+      
+      }
+    }
+    var element;
+    if (dataCategory=='node')
+    {
+      element=alchemy._nodes[iden];
+    }
+    else
+    {
+      var edgeId="" + src + "-" +dst
+      element=alchemy._edges[edgeId][0];
+    }
+    for (var key in jsonObj) 
+    {
+       element._properties[key]=jsonObj[key];
+    }
+    var query={}
+    query['type']='update';
+    query['category']=dataCategory;
+    query['props']=element._properties;
+    $rootScope.writeToLog(query);
+    
+};
+
+$scope.DeleteHandler=function(category,Id)
+{
+  var iden="";
+    var x=document.getElementById('editForm').childNodes;
+    for (var i=0;i<x.length;i++)
+    {
+      if (x[i].childNodes.length>1 )
+      {
+        if (x[i].childNodes[2].id=='props-id')
+        {
+          iden=x[i].childNodes[2].value
+        }
+      x[i].childNodes[2].disabled = true;
+      }
+    }
+    var elementProps;
+      if (category=='node')
+      {
+        node = alchemy.get.nodes(iden);
+        node.remove()
+      }
+      else
+      {
+        var edge = alchemy.get.edges(Id);
+        console.log(edge);
+        elementProps=alchemy._edges[Id][0]._properties;
+        edge.remove()
+      }
+      var query={}
+      query['type']='Delete';
+      query['category']='edge';
+      query['props']=elementProps;
+
+      $rootScope.writeToLog(query);
+      document.getElementById('insertStuff').innerHTML="";
+};
+
+    $scope.createEditor = function (sourceId) 
     {
       return CodeMirror.fromTextArea(document.getElementById(sourceId), {
         parserfile: ["codemirror-cypher.js"],
@@ -19,22 +183,36 @@ angular.module('visualisationTool')
     {
       // var input=document.getElementById('weaver').value;
       var weaverGraphEndpoint = 'http://52.25.65.189:8000/graph/getNode/';
-
+       // console.log(JSON.parse();
+        var retVal=$scope.editor.getValue();
+        // console.log(retVal);
+        var r1=retVal.split(',');
+        var query=r1[0].split(':')[1];
+        var direction=r1[1].split(':')[1]
+        var number=r1[2].split(':')[1];
+        // console.log(query,number,direction);
         $.getJSON(weaverGraphEndpoint, 
           {
-              query: 'phone',
-              number: 100,
+              query: query,
+              number: number,
               overwrite:'1',
-              directionVal: 'F'
+              directionVal: direction
           }, 
           function(data) 
           {
-              console.log(data);
               var config=$scope.config;
               config.dataSource=data;
-              document.getElementById('nodeModalButton').style.display='block';
-              document.getElementById('edgeModalButton').style.display='block';
+              // console.log(data);
+
               alchemy = new Alchemy(config);
+
+            for (var i=0;i<data['nodes'].length;i++)
+            {
+              $scope.addPopOver(data['nodes'][i]);
+            }
+
+
+
               return false;
           });
 
@@ -43,10 +221,15 @@ angular.module('visualisationTool')
     $scope.initAlchemyConfig= function (config,graphId) {
 		config.divSelector="#"+graphId;
 		config.edgeTypes = "caption";
-    // document.getElementById('myModalNode').style.display='none';
-    // document.getElementById('myModalEdge').style.display='none';
-		// alchemy = new Alchemy({divSelector:"#"+graphId,graphHeight: function(){ return window.innerHeight-100 },});
 		alchemy = new Alchemy(config);
+
+    ngNotify.set('The current system is in alpha, Use it carefully! ', {
+    type: 'warn',
+    position:'top',
+    duration: 500
+    });
+
+
     return config;
 	};
 
@@ -60,6 +243,12 @@ angular.module('visualisationTool')
   
   };
 
+  $scope.changeProps=function()
+  {
+    console.log(document.getElementsByClassName('SAME_SYNSET'));
+  
+  };
+
   $scope.addPopOver=function(elem)
   {
      var str="";
@@ -70,7 +259,7 @@ angular.module('visualisationTool')
         str=str+key+" : "+dict[key]+"<br>";
         if (key=='mediapath')
         {
-          url='http://d1rygkc2z32bg1.cloudfront.net/'+dict[key];
+          var url='http://d1rygkc2z32bg1.cloudfront.net/'+dict[key];
           img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
         }
         else if (key=='handle' || key=='labels')
@@ -78,9 +267,10 @@ angular.module('visualisationTool')
           img=img+key+" : "+dict[key]+"<br>";
         }
      }
+     
       var UID='node-'+elem['id'];
-      elem=document.getElementById(UID);
-      $(elem).popover
+      var elem1=document.getElementById(UID);
+      $(elem1).popover
       ({
         'show': true,
         'trigger': 'hover',
@@ -110,12 +300,28 @@ angular.module('visualisationTool')
     {
        if (i%2==0)
         {
-          jsonObj[x[i].value]=x[i+1].value
+          var key=x[i].value;
+          key=key.split(' ').join('_');
+          jsonObj[key]=x[i+1].value
         }
     }
     var edge=JSON.parse(JSON.stringify(jsonObj));
-    alchemy.create.edges(edge);
+    
+    var edgeId="" + edge.source + "-" +edge.target;
+    if (alchemy.get.edges(edgeId).api.length==1)
+    {
+      ;
+    }
+    else
+    {
+      alchemy.create.edges(edge);
+    }
 
+    var query={};
+    query['type']='create'
+    query['category']='edge'
+    query['props']=jsonObj
+    $rootScope.writeToLog(query)
   document.getElementById('modalFormEdge').innerHTML='<div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="node" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="edge" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="handle" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div>'
   };
   $scope.AddNodes=function()
@@ -126,7 +332,9 @@ angular.module('visualisationTool')
     {
       if (i%2==0)
       {
-        jsonObj[x[i].value]=x[i+1].value
+        var key=x[i].value;
+        key=key.split(' ').join('_');
+        jsonObj[key]=x[i+1].value
       }
     }
     jsonObj['id']=$scope.hashFn(jsonObj['handle']);
@@ -135,6 +343,13 @@ angular.module('visualisationTool')
     alchemy.create.nodes(node);
     document.getElementById('modalFormNode').innerHTML='<div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="handle" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div>'
     $scope.addPopOver(jsonObj);
+    
+    var query={};
+    query['type']='create'
+    query['category']='node'
+    query['props']=jsonObj
+    $rootScope.writeToLog(query)
+
   };
  
   $scope.addKeyValEdge=function()
@@ -148,31 +363,67 @@ angular.module('visualisationTool')
   };
   $scope.addMoreNodes=function(input)
   {
-    console.log(input);
     var weaverGraphEndpoint = 'http://52.25.65.189:8000/graph/getNode/';
+    
+    var retVal=$scope.editor.getValue();
+    var r1=retVal.split(',');
+    var query=r1[0].split(':')[1];
+    var number=r1[2].split(':')[1]
+    var direction=r1[1].split(':')[1];
+
+
     $.getJSON(weaverGraphEndpoint, 
       {
           query: input,
-          number: 10,
+          number: number,
           overwrite:'0',
-          directionVal:'B'
+          directionVal:direction
       },function(data) 
       {
-        // var config=$scope.config;
-        // console.log(config);
-        // config.dataSource=data;
-        // alchemy = new Alchemy(config);
-        // return false;
+        for (var i=0;i<data['nodes'].length;i++)
+        {
+          if (alchemy.get.nodes(data['nodes'][i].id).api.length==1)
+          {
+            ;
+          }
+          else
+          {
+            alchemy.create.nodes(data['nodes'][i]);
+            $scope.addPopOver(data['nodes'][i]);
+          }
+        }
 
-        alchemy.create.nodes(data['nodes']);
-        alchemy.create.edges(data['edges']);
-        console.log(typeof data['nodes']);
-        console.log(data['nodes']);
+        for (var i=0;i<data['edges'].length;i++)
+        {
+          var edgeId="" + data['edges'][i].source + "-" +data['edges'][i].target;
+          if (alchemy.get.edges(edgeId).api.length==1)
+          {
+            ;
+          }
+          else
+          {
 
+            alchemy.create.edges(data['edges'][i]);
+          }
+        }
+        alchemy.stats.nodeStats();
+        alchemy.stats.edgeStats();
 
 
       });
   }
   	$scope.editor=$scope.createEditor('weaver');
   	$scope.config = $scope.initAlchemyConfig(config,'graph');
+    if (!$window.localStorage.username)
+    {
+      $rootScope.username='Mr. X'
+      $rootScope.loggedIn=false
+    }
+    else
+    {
+      $rootScope.username=window.localStorage.username
+      $rootScope.loggedIn=true
+    }
+    
+    
   }]);

@@ -6,8 +6,8 @@ function WeaverNodeEditor(n,propsArray,category,Id)
   {
     if (propsArray.indexOf(key) > -1)
     {
-      str=str+"<div class='form-group'>";
-      str=str+"<label for='"+key+"'<span style='color:white;font-size:1.5em'>"+key+":</span></label>";
+      str=str+"<div class='form-group' data-category='"+category+"'>";
+      str=str+"<label for='"+key+"'<span style='color:white;font-size:1.5em'>"+key+":</span></label><br>";
       str=str+"<input type='props-"+key+"' class='form-control' id='props-"+key+"' value='"+dict[key]+"'>";
       str=str+"</div>";
     }       
@@ -22,75 +22,25 @@ function WeaverNodeEditor(n,propsArray,category,Id)
   for (var i=0;i<x.length;i++)
   {
     if (x[i].childNodes.length>1 )
-      document.getElementById(x[i].childNodes[1].id).disabled = true;
+      document.getElementById(x[i].childNodes[2].id).disabled = true;
   }
   document.getElementById('EditProps').onclick = function() 
   { 
-    document.getElementById('EditProps').style.display='none';
-    if (category!='node')
-      document.getElementById('DeleteProps').style.display='none';
-    document.getElementById('SubmitProps').style.display='block';
-    var x=document.getElementById('editForm').childNodes;
-    for (var i=0;i<x.length;i++)
-    {
-      if (x[i].childNodes.length>1 )
-        if (x[i].childNodes[1].id!='props-id')
-        {
-         document.getElementById(x[i].childNodes[1].id).disabled = false;
-        }
-    }
+  (angular.element(document.getElementById('graphcontain').parentNode)).scope().EditPropertyHandlerIm(category,Id);
   };
 
   document.getElementById('SubmitProps').onclick = function() 
   { 
-    document.getElementById('SubmitProps').style.display='none';
-    var x=document.getElementById('editForm').childNodes;
-    for (var i=0;i<x.length;i++)
-    {
-      if (x[i].childNodes.length>1 )
-      {
-      x[i].childNodes[1].disabled = true;
-      // console.log(x[i].childNodes[1].value);
-      }
-    }
+  (angular.element(document.getElementById('graphcontain').parentNode)).scope().EditPropertyHandler(category,Id); 
   };
 
   if (category!='node')
   {
     document.getElementById('DeleteProps').onclick = function() 
   { 
-    var iden="";
-    var x=document.getElementById('editForm').childNodes;
-    for (var i=0;i<x.length;i++)
-    {
-      if (x[i].childNodes.length>1 )
-      {
-        // console.log(x[i].childNodes[1].id);
-        if (x[i].childNodes[1].id=='props-id')
-        {
-          iden=x[i].childNodes[1].value
-        }
-      x[i].childNodes[1].disabled = true;
-      }
-    }
-      // console.log(iden);
-      if (category=='node')
-      {
-        node = alchemy.get.nodes(iden);
-        node.remove()
-      }
-      else
-      {
-        edge = alchemy.get.edges(Id);
-        edge.remove()
-      }
-      document.getElementById('insertStuff').innerHTML="";
-    
-
+     (angular.element(document.getElementById('graphcontain').parentNode)).scope().DeleteHandler(category,Id);
   };
-
   }
-  
 }
 
 (function() {
@@ -202,9 +152,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       instNumber = parseInt(d3.select(svg).attr("alchInst"));
       return Alchemy.prototype.instances[instNumber];
     };
-
     return Alchemy;
-
   })();
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
@@ -264,7 +212,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     }
   }
 
-
   API.prototype.Create = function(instance, api) {
     return {
       a: instance,
@@ -272,8 +219,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       nodes: function() {
         var a, n, nodeMap, nodeMaps, registerNode, _i, _len;
         nodeMap = arguments[0], nodeMaps = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-        // console.log('NodeMap');
-        // console.log(nodeMap);
         a = this.a;
         registerNode = function(node) {
           var aNode;
@@ -292,8 +237,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         }
         if (this.a.initial) {
           this.a.index = Alchemy.prototype.Index(this.a);
-          console.log('Attempt2');
-          // console.log(this.a.index);
+          // console.log('Attempt2');
           return this.a.updateGraph();
         }
       },
@@ -303,11 +247,9 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         a = this.a;
         registerEdge = function(edge) {
           var aEdge, edgeArray;
-          // console.log(edge.id)
           if (edge.id && !a._edges[edge.id]) {
             aEdge = new a.models.Edge(edge);
             a._edges[edge.id] = [aEdge];
-            // console.log(a._edges)
             return [aEdge];
           } else if (edge.id && a._edges[edge.id]) {
             return console.warn("An edge with that id " + someEdgeMap.id + " already exists.\nConsider using the @a.get.edge() method to \nretrieve the edge and then using the Edge methods.\nNote: id's are not required for edges.  Alchemy will create\nan unlimited number of edges for the same source and target node.\nSimply omit 'id' when creating the edge.");
@@ -786,7 +728,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         var divSelector;
         if (this.dashIsShown()) {
           var x=document.getElementById('control-dash-wrapper');
-          // console.log(x);
           if (!x)
           {
           ;
@@ -800,6 +741,11 @@ function WeaverNodeEditor(n,propsArray,category,Id)
           a.dash.append("i").attr("id", "dash-toggle").attr("class", "fa fa-flask col-md-offset-12");
           a.dash.append("div").attr("id", "control-dash").attr("class", "col-md-12");
           a.dash.select('#dash-toggle').on('click', a.interactions.toggleControlDash);
+          
+          // a.dash.select('#zoom-in').on("click", function() {
+          //   return a.interactions.clickZoom('in');
+          // });
+
           a.controlDash.zoomCtrl();
           a.controlDash.search();
           a.controlDash.graphEdit();
@@ -807,8 +753,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
           a.controlDash.stats();
           a.controlDash.clustering();
           return a.controlDash.exports();
-
-          
         }
       },
       search: function() {
@@ -820,16 +764,12 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       graphEdit: function() {
         if (a.conf.graphEdit) {
           a.dash.select("#control-dash").append("div").attr("id", "search").html("<div id=\"insertStuff\"></div>");
-          // return a.search.init();
         }
       },
 
       zoomCtrl: function() {
         if (a.conf.zoomControls) {
-          // <MODIFIED>
-          // a.dash.select("#control-dash-wrapper").append("div").attr("id", "zoom-controls").attr("class", "col-md-offset-12").html("<button id='zoom-reset'  class='btn btn-defualt btn-primary'><i class='fa fa-crosshairs fa-lg'></i></button> <button id='zoom-in'  class='btn btn-defualt btn-primary'><i class='fa fa-plus'></i></button> <button id='zoom-out' class='btn btn-default btn-primary'><i class='fa fa-minus'></i></button>");
           a.dash.append("div").attr("id", "zoom-controls").attr("class", "col-md-offset-12").html("<button id='zoom-reset'  class='btn btn-defualt btn-primary'><i class='fa fa-crosshairs fa-lg'></i></button> <button id='zoom-in'  class='btn btn-defualt btn-primary'><i class='fa fa-plus'></i></button> <button id='zoom-out' class='btn btn-default btn-primary'><i class='fa fa-minus'></i></button>");
-
           a.dash.select('#zoom-in').on("click", function() {
             return a.interactions.clickZoom('in');
           });
@@ -1121,14 +1061,12 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     return {
       edgeClick: function(d) {
         var propsArray = ["source","target", "handle","id"];
-        // console.log(d);
         WeaverNodeEditor(d,propsArray,'edge',d.id);
-
         var edge;
         if (d3.event.defaultPrevented) {
           return;
         }
-        d3.event.stopPropagation();
+        // d3.event.stopPropagation();
         edge = d.self;
         if (typeof a.conf.edgeClick === 'function') {
           a.conf.edgeClick(edge);
@@ -1200,24 +1138,20 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         if (typeof a.conf.nodeClick === 'function') {
           a.conf.nodeClick(node);
         }
-        // if (node._state !== "hidden") {
-        //   node._state = (function() {
-        //     if (node._state === "selected") {
-        //       return "active";
-        //     }
-        //     return "selected";
-        //   })();
-        //   return node.setStyles();
-        // }
+        if (node._state !== "hidden") {
+          node._state = (function() {
+            if (node._state === "selected") {
+              return "active";
+            }
+            return "selected";
+          })();
+          return node.setStyles();
+        }
       },
       zoom: function(extent) {
-
-        console.log('zoomed');
-
         if (this._zoomBehavior == null) {
           this._zoomBehavior = d3.behavior.zoom();
         }
-
         return this._zoomBehavior.scaleExtent(extent).on("zoom", function(d) {
           a = Alchemy.prototype.getInst(this);
           return a.vis.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
@@ -1228,10 +1162,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         _ref = a.vis.attr("transform").match(/(-*\d+\.*\d*)/g).map(function(a) {
           return parseFloat(a);
         }), x = _ref[0], y = _ref[1], scale = _ref[2];
-        // console.log(a.vis);
-        // console.log(document.getElementById('graph'));
-        // console.log('ClickZoom')
-        // console.log(_ref);
         scale=window.scale;
         if (direction === "in") 
         {
@@ -1255,25 +1185,33 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         {
             return console.log('error');
         }
-        // console.log(scale);
-        // console.log('ClickZoomEdn')
-        // a.vis.attr("transform", "translate("+x+","+y+") scale("+scale+")");
-        // console.log(a.vis);
         window.draggingFn(scale,'zoom');
-        if (this._zoomBehavior == null) {
-          // console.log('hello')
-          this._zoomBehavior = d3.behavior.zoom();
-        }
-        return this._zoomBehavior.scale(scale).translate([x, y]);
       },
       toggleControlDash: function() {
         var offCanvas;
+        var disp=offCanvas = a.dash.classed("off-canvas") || a.dash.classed("initial");
+        
         offCanvas = a.dash.classed("off-canvas") || a.dash.classed("initial");
-        return a.dash.classed({
-          "off-canvas": !offCanvas,
-          "initial": false,
-          "on-canvas": offCanvas
-        });
+        if (offCanvas)
+        {
+          $('#control-dash-wrapper').removeClass( "off-canvas" );
+          $('#control-dash-wrapper').removeClass( "initial" );
+          $('#control-dash-wrapper').addClass( "on-canvas" );
+        }
+        else
+        {
+          $('#control-dash-wrapper').addClass( "off-canvas" );
+          $('#control-dash-wrapper').removeClass( "initial" );
+          $('#control-dash-wrapper').removeClass( "on-canvas" );
+        }
+        
+        
+
+        // return a.dash.classed({
+        //   "off-canvas": !offCanvas,
+        //   "initial": false,
+        //   "on-canvas": offCanvas
+        // });
       },
       nodeDragStarted: function(d, i) {
         d3.event.preventDefault;
@@ -1282,7 +1220,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         return d.fixed = true;
       },
       nodeDragged: function(d, i) {
-        // console.log('called123');
         var edges, node;
         a = d.self.a;
         d.x += d3.event.dx;
@@ -1290,18 +1227,11 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         d.px += d3.event.dx;
         d.py += d3.event.dy;
         node = d3.select(this);
-        // d3.event;
-        // a.vis.attr("transform", "translate(" + 500 + ", " + 1 + ")");
         node.attr("transform", "translate(" + d.x + ", " + d.y + ")");
         edges = d.self._adjacentEdges;
-        // console.log(edges);
-        // return false
         return _.each(edges, function(edge) {
-          
           var selection;
-          
           selection = a.vis.select("#edge-" + edge.id + "-" + edge._index);
-          
           if (selection.data()[0])
           {
             return a._drawEdges.updateEdge(selection.data()[0]);
@@ -1332,10 +1262,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         a = Alchemy.prototype.getInst(this);
         if ((_ref = d3.event) != null ? _ref.defaultPrevented : void 0) {
           return;
-        }
-        if (a.conf.showEditor === true) {
-          // a.modifyElements.nodeEditorClear();
-          ;
         }
         _.each(a._nodes, function(n) {
           n._state = "active";
@@ -1529,8 +1455,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     };
   };
 
-
-
   Alchemy.prototype.search = function(instance) {
     var a;
     a = instance;
@@ -1584,8 +1508,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       if (d3.select(conf.divSelector).empty()) {
         console.warn(a.utils.warnings.divWarning());
       }
-      // console.log('data');
-      // console.log(data);
       if (!data) {
         data = {
           nodes: [],
@@ -1596,69 +1518,47 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       if (data.edges == null) {
         data.edges = [];
       }
-
-      // console.log(data.nodes);
       a.create.nodes(data.nodes);
-
       data.edges.forEach(function(e) {
         return a.create.edges(e);
       });
-
-        window.draggingFn=function(zoomVal,val1) {
+      window.draggingFn=function(zoomVal,val1) 
+      {
         var _ref,x,y,scale;
         _ref = a.vis.attr("transform").match(/(-*\d+\.*\d*)/g).map(function(a) {
           return parseFloat(a);
         }), x = _ref[0], y = _ref[1], scale = _ref[2];
-
-        // console.log(x,y,scale);
-        if (val1!='zoom')
-        {
-          x=(x+d3.event.dx)
-          y=(y+d3.event.dy)
-        }
-        else
-        {
-          scale=zoomVal
-          // console.log('entered');
-        }
-        window.x=x;
-        window.y=y;
-        window.scale=scale;
-        // console.log(x,y,scale);
-
-        a.vis.attr("transform", "translate("+x+","+y+") scale("+scale+")");
+          if (val1!='zoom')
+          {
+            x=(x+d3.event.dx)
+            y=(y+d3.event.dy)
+          }
+          else
+          {
+            scale=zoomVal
+          }
+          window.x=x;
+          window.y=y;
+          window.scale=scale;
+          a.vis.attr("transform", "translate("+x+","+y+") scale("+scale+")");
       }
-
       var dragGroup = d3.behavior.drag()
       .on('dragstart', function() {
         ;
-        // console.log('Start Dragging Group');
       }).on('drag', draggingFn).on("dragend", function(){
         ;
-        // console.log('dragend');
       });
-
-      // a.interactions.zoom(conf.scaleExtent)
-      // console.log(document.getElementById('graph'));
-      // console.log(document.getElementById('graph'));
-      document.getElementById('graph').innerHTML="";
-
+      // document.getElementById('graph').innerHTML="";
+      // console.log(conf.backgroundColour);
       a.vis = d3.select(conf.divSelector).attr("style", "width:" + (conf.graphWidth()) + "px; height:" + (conf.graphHeight()) + "px; background:" + conf.backgroundColour + ";").append("svg").attr("xmlns", "http://www.w3.org/2000/svg").attr("xlink", "http://www.w3.org/1999/xlink").attr("pointer-events", "all").attr("style", "background:" + conf.backgroundColour + ";").attr("alchInst", Alchemy.prototype.instances.length - 1).on('click', a.interactions.deselectAll).call(dragGroup).on("dblclick.zoom", null).append('g').attr("transform", "translate(" + conf.initialTranslate + ") scale(" + conf.initialScale + ")");
       window.x=0;
       window.y=0;
       window.scale=1;
-      // console.log('vis');
-      // console.log(a.vis);
-      // a.interactions.zoom().scale(conf.initialScale);
-      // a.interactions.zoom().translate(conf.initialTranslate);
       a.index = Alchemy.prototype.Index(a);
       a.generateLayout();
       a.controlDash.init();
       d3Edges = a.elements.edges.d3;
       d3Nodes = a.elements.nodes.d3;
-      console.log('hjek');
-            // console.log(d3Nodes);
-
       a.layout.positionRootNodes();
       a.force.start();
       if (conf.forceLocked) {
@@ -1666,17 +1566,11 @@ function WeaverNodeEditor(n,propsArray,category,Id)
           a.force.tick();
         }
       }
- console.log('hjek');
       a._drawEdges = a.drawing.DrawEdges;
-      console.log('hjek1');
       a._drawNodes = a.drawing.DrawNodes;
-      console.log('hjek2');
-      console.log(d3Edges);
       a._drawEdges.createEdge(d3Edges);
-      console.log('hjek3');
       a._drawNodes.createNode(d3Nodes);
       a.index();
-
       a.elements.nodes.svg.attr("transform", function(id, i) {
         return "translate(" + id.x + ", " + id.y + ")";
       });
@@ -1697,59 +1591,44 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       if (conf.nodeStats) {
         a.stats.nodeStats();
       }
-
-      // console.log(d3Nodes);
       var content='Random Stuff';
-      // var UID='testNode';
       var iterate;
-      // console.log('StartGraphCalled');
-      for (iterate=0;iterate<d3Nodes.length;iterate=iterate+1)
-      {
-          // console.log('StartGraphCalledEnter');
-          str="";
-           img="";
-           dict=d3Nodes[iterate].self._properties;
-           for (var key in dict)
-           {
-              str=str+key+" : "+dict[key]+"<br>";
-              if (key=='mediapath')
-              {
-                url='http://d1rygkc2z32bg1.cloudfront.net/'+dict[key];
-                // console.log(url);
-                img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
-
-              }
-              else if (key=='handle' || key=='labels')
-              {
-                img=img+key+" : "+dict[key]+"<br>";
+      // for (iterate=0;iterate<d3Nodes.length;iterate=iterate+1)
+      // {
+      //      var str="";
+      //      var img="";
+      //      var dict=d3Nodes[iterate].self._properties;
+      //      for (var key in dict)
+      //      {
+      //         str=str+key+" : "+dict[key]+"<br>";
+      //         if (key=='mediapath')
+      //         {
+      //           url='http://d1rygkc2z32bg1.cloudfront.net/'+dict[key];
+      //           img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
+      //         }
+      //         else if (key=='handle' || key=='labels')
+      //         {
+      //           img=img+key+" : "+dict[key]+"<br>";
                 
-              }
-           }
-            // console.log(d3Nodes[iterate]);
-            UID='node-'+d3Nodes[iterate].id;
-            elem=document.getElementById(UID);
-            //console.log(elem);
-            $(elem).popover
-            ({
-              'show': true,
-              'trigger': 'hover',
-              'container':'body',
-              'placement': 'right',
-              'content': img,
-               'html': true,
-            });
-      }
-      
-      // $(elem).popover('show');
-      // elem.childNodes[1].innerHTML="<div> Random Shit</div>"
-      // console.log(elem.childNodes[1]);
-      // if (conf.showEditor) {
-      //   editor = new a.editor.Editor;
-      //   editorInteractions = new a.editor.Interactions;
-      //   d3.select("body").on('keydown', editorInteractions.deleteSelected);
-      //   editor.startEditor();
+      //         }
+      //      }
+      //       UID='node-'+d3Nodes[iterate].id;
+      //       elem=document.getElementById(UID);
+      //       $(elem).popover
+      //       ({
+      //         'show': true,
+      //         'trigger': 'hover',
+      //         'container':'body',
+      //         'placement': 'right',
+      //         'content': img,
+      //          'html': true,
+      //       });
       // }
+      document.getElementById('stats').style.display='none';
+      // document.getElementById('control-dash').style.display='none';
+      // console.log('StartGraph');
       return a.initial = true;
+
     };
   };
 
@@ -1758,7 +1637,8 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     a = instance;
     return {
       init: function() {
-        return a.stats.update();
+        return false;
+        a.stats.update();
       },
       nodeStats: function() {
         var activeNodes, allNodes, caption, inactiveNodes, nodeData, nodeGraph, nodeKeys, nodeNum, nodeStats, nodeType, nodeTypes, _i, _len, _ref;
@@ -1775,6 +1655,21 @@ function WeaverNodeEditor(n,propsArray,category,Id)
             nodeType = _ref[_i];
             caption = nodeType.replace('_', ' ');
             nodeNum = a.vis.selectAll("g.node." + nodeType)[0].length;
+            if (nodeNum>0)
+            {
+              if (document.getElementById('legend-'+nodeType))
+              {
+                document.getElementById('legend-'+nodeType).children[0].innerHTML=nodeNum;
+              }
+              else
+              {
+              div = document.getElementById('nodeBadgeLoc');    
+              div.insertAdjacentHTML('beforeend', "<button class=\"btn btn-success\" type=\"button\" id='legend-"+nodeType+"'>"+caption+"<span class=\"badge\">"+nodeNum+"</span></button>");
+
+              }
+
+            }
+              
             nodeTypes += "<li class = 'list-group-item nodeType' id='li-" + nodeType + "' name = " + caption + ">Number of <strong style='text-transform: uppercase'>" + caption + "</strong> nodes: <span class='badge'>" + nodeNum + "</span></li>";
             nodeData.push(["" + nodeType, nodeNum]);
           }
@@ -1782,7 +1677,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         }
         nodeGraph = "<li id='node-stats-graph' class='list-group-item'></li>";
         nodeStats += nodeGraph;
-        a.dash.select('#node-stats').html(nodeStats);
+        // a.dash.select('#node-stats').html(nodeStats);
         return this.insertSVG("node", nodeData);
       },
       edgeStats: function() {
@@ -1806,6 +1701,26 @@ function WeaverNodeEditor(n,propsArray,category,Id)
                 return edge;
               }
             }).length;
+
+
+            if (edgeNum>0)
+            {
+              if (document.getElementById('legendEdge-'+edgeType))
+              {
+                document.getElementById('legendEdge-'+edgeType).children[0].innerHTML=edgeNum;
+              }
+              else
+              {
+              div = document.getElementById('edgeBadgeLoc');    
+              div.insertAdjacentHTML('beforeend', "<button class=\"btn btn-primary\" type=\"button\" id='legend-"+edgeType+"'>"+caption+"<span class=\"badge\">"+edgeNum+"</span></button>");
+
+              }
+
+            }
+
+
+
+
             edgeTypes += "<li class = 'list-group-item edgeType' id='li-" + edgeType + "' name = " + caption + ">Number of <strong style='text-transform: uppercase'>" + caption + "</strong> relationships: <span class='badge'>" + edgeNum + "</span></li>";
             edgeData.push(["" + caption, edgeNum]);
           }
@@ -1852,10 +1767,12 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       },
       update: function() {
         if (a.conf.nodeStats) {
-          this.nodeStats();
+          ;
+          // this.nodeStats();
         }
         if (a.conf.edgeStats) {
-          return this.edgeStats();
+          // return this.edgeStats();
+          ;
         }
       }
     };
@@ -1865,10 +1782,8 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     var a;
     a = instance;
     return function() {
-      // console.log('changginh');
       a.generateLayout();
       a._drawEdges.createEdge(a.elements.edges.d3);
-      // console.log(a.elements.nodes.d3);
       a._drawNodes.createNode(a.elements.nodes.d3);
       a.index();
       a.layout.positionRootNodes();
@@ -1887,8 +1802,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     plugins: null,
     renderer: "svg",
     graphWidth: function() {
-      // return window.innerWidth;
-      return d3.select(this.divSelector).node().parentElement.clientWidth;
+      return d3.select(this.divSelector).node().parentElement.clientWidth-18;
     },
     graphHeight: function() {
       if (d3.select(this.divSelector).node().parentElement.nodeName === "BODY") {
@@ -1985,7 +1899,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     edgeClick: null,
     search: false,
     searchMethod: "contains",
-    backgroundColour: "#000000",
+    backgroundColour: "#FFFFFF",
     theme: null,
     afterLoad: 'afterLoad',
     divSelector: '#alchemy',
@@ -2224,10 +2138,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     return {
       a: instance,
       createEdge: function(d3Edges) {
-
-        console.log('Create edge');
-        console.log(d3Edges);
-
         var d3edges, drawEdge;
         drawEdge = this.a.drawing.DrawEdge;
         d3edges = this.a.vis.selectAll("g.edge").data(d3Edges);
@@ -2238,7 +2148,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         }).attr('source-target', function(d) {
           return "" + d.source.id + "-" + d.target.id;
         });
-        console.log('Done');
+        // console.log('Done');
         drawEdge.createLink(d3edges);
         drawEdge.classEdge(d3edges);
         drawEdge.styleLink(d3edges);
@@ -3455,7 +3365,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
 
   Alchemy.prototype.themes = {
     "default": {
-      "backgroundColour": "#000000",
+      "backgroundColour": "#FFFFFF",
       "nodeStyle": {
         "all": {
           "radius": function() {
@@ -3636,4 +3546,3 @@ function WeaverNodeEditor(n,propsArray,category,Id)
 
 }).call(this);
 
-//# sourceMappingURL=alchemy.js.map

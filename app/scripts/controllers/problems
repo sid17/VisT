@@ -1,0 +1,16 @@
+1)adding popovers twice creates a problem
+2) multiple edges not allowed
+3) deleting an edge is a problem
+4)toggle does not trigger a lot of times
+5) will not look good on all platforms( fixed element)
+6) edge types is not being displayed
+7) allow to change style elements for different handles
+8) search does not worl so far
+9) update pop over elements after updating their property
+10) cannot have id attribute for edges
+11) changing property assumes unique edge between 2 nodes and assigns properties to the root node number 0
+12) deletion breaks : cannot update properties 0 of undefined
+13) check the handle name does not have spaces
+14)check that the nodes between which the given edge is made exists and there does not alread exist a node between them
+15) check that no space between the names or replace all the space by underscore
+16) replace nodeIds with handle names in the graph

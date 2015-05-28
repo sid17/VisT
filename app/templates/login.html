@@ -1,0 +1,15 @@
+<!-- build:css(.tmp) styles/login.css -->
+<link rel="stylesheet" href="styles/createuser.css">
+<!-- endbuild -->
+<p class="text-danger" ng-show="loginError">{{ loginError }}</p>
+<form ngcloak ng-if="!user" class="form-signin" role="form" ng-submit='login(user)'>
+  <h2 class="form-signin-heading" style="color:white">Login</h2>
+  <input type="email" class="form-control" ng-model="user.email" placeholder="Email address" required="" autofocus="">
+  <input type="password" class="form-control" ng-model="user.password" placeholder="Password" required="">
+<!--   <label class="checkbox">
+    <input type="checkbox" value="remember-me"> Remember me
+  </label> -->
+  <button class="btn btn-lg btn-primary btn-block">Login</button>
+  <br>
+  <span style="color:white">Not a user yet?</span> <a ng-href="#/register" class="link_login">Create an account!</a>
+</form>
