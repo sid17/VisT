@@ -1659,7 +1659,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         activeEdges = a.get.activeEdges().length;
         inactiveEdges = allEdges - activeEdges;
         edgeStats = "<li class = 'list-group-item gen_edge_stat'>Number of relationships: <span class='badge'>" + allEdges + "</span></li> <li class = 'list-group-item gen_edge_stat'>Number of active relationships: <span class='badge'>" + activeEdges + "</span></li> <li class = 'list-group-item gen_edge_stat'>Number of inactive relationships: <span class='badge'>" + inactiveEdges + "</span></li></br>";
-        if (alchemy.conf.edgeTypes) {
+        if (alchemy.conf.edgeCategory) {
           edgeKeys=Object.keys(a.conf.edgeCategory);
           edgeTypes = '';
           _ref = a.conf.edgeCategory[edgeKeys];
