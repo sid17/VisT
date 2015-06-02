@@ -191,7 +191,7 @@ $scope.DeleteHandler=function(category,Id,handle)
 
     $scope.addMoreNodes = function (input)
     {
-    var weaverGraphEndpoint = 'http://52.25.65.189:8000/graph/getNode/';
+    var weaverGraphEndpoint = 'http://52.25.65.189:6363/graph/getNode/';
     var retVal=$scope.editor.getValue();
     var r1=retVal.split(',');
     var query=r1[0].split(':')[1];
@@ -254,7 +254,8 @@ $scope.deleteDuplicates= function(data)
 
     $scope.queryGraph=function()
     {
-      var weaverGraphEndpoint = 'http://52.25.65.189:8000/graph/getNode/';
+<<<<<<< HEAD
+      var weaverGraphEndpoint = 'http://52.25.65.189:6363/graph/getNode/';
       var retVal=$scope.editor.getValue();
       var r1=retVal.split(',');
       var query=r1[0].split(':')[1];
@@ -420,6 +421,56 @@ $scope.deleteDuplicates= function(data)
     document.getElementById('modalFormEdge').appendChild(element); 
   
   };
+<<<<<<< HEAD
+=======
+  $scope.addMoreNodes=function(input)
+  {
+    var weaverGraphEndpoint = 'http://52.25.65.189:6363/graph/getNode/';
+    
+    var retVal=$scope.editor.getValue();
+    var r1=retVal.split(',');
+    var query=r1[0].split(':')[1];
+    var number=r1[2].split(':')[1]
+    var direction=r1[1].split(':')[1];
+
+
+    $.getJSON(weaverGraphEndpoint, 
+      {
+          query: input,
+          number: number,
+          overwrite:'0',
+          directionVal:direction
+      },function(data) 
+      {
+        for (var i=0;i<data['nodes'].length;i++)
+        {
+          if (alchemy.get.nodes(data['nodes'][i].id).api.length==1)
+          {
+            ;
+          }
+          else
+          {
+            alchemy.create.nodes(data['nodes'][i]);
+            $scope.addPopOver(data['nodes'][i]);
+          }
+        }
+
+        for (var i=0;i<data['edges'].length;i++)
+        {
+          var edgeId="" + data['edges'][i].source + "-" +data['edges'][i].target;
+          if (alchemy.get.edges(edgeId).api.length==1)
+          {
+            ;
+          }
+          else
+          {
+
+            alchemy.create.edges(data['edges'][i]);
+          }
+        }
+        alchemy.stats.nodeStats();
+        alchemy.stats.edgeStats();
+>>>>>>> d5544bd5058d13d84299cd2c6c4dc278e727d313
 
   	$scope.initialise = function() 
     {
