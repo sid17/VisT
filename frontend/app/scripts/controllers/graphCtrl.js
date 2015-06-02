@@ -1,7 +1,10 @@
 'use strict';
+
 angular.module('visualisationTool')
   .controller('graphCtrl', ['$scope', '$http','$rootScope', '$window','AuthService','$location','ngNotify',function ($scope, $http,$rootScope,$window,AuthService,$location,ngNotify) {
+    
     $rootScope.logout = function () {
+      // console.log('Logout Called');
       AuthService.logout().then(
       function () {
         $location.path('/');
@@ -11,6 +14,7 @@ angular.module('visualisationTool')
       }
     );
   };
+
   $rootScope.writeToLog = function (query) 
   {
       $rootScope.queryContents=query
@@ -38,9 +42,9 @@ angular.module('visualisationTool')
     );
   };
 
-$scope.EditPropertyHandlerIm=function(category,Id,handle)
+$scope.EditPropertyHandlerIm=function(category,Id)
 {
-    document.getElementById('EditProps').style.display='none';
+  document.getElementById('EditProps').style.display='none';
     if (category!='node')
       document.getElementById('DeleteProps').style.display='none';
     document.getElementById('SubmitProps').style.display='block';
@@ -57,7 +61,7 @@ $scope.EditPropertyHandlerIm=function(category,Id,handle)
     }
 };
 
-$scope.EditPropertyHandler = function(category,Id,handle)
+$scope.EditPropertyHandler = function(category,Id)
 {
   document.getElementById('SubmitProps').style.display='none';
     var x=document.getElementById('editForm').childNodes;
@@ -71,6 +75,7 @@ $scope.EditPropertyHandler = function(category,Id,handle)
       if (x[i].childNodes.length>1 )
       {
       dataCategory=$(x[i]).data("category");
+      // console.log(dataCategory);
       x[i].childNodes[2].disabled = true;
       var val=x[i].childNodes[2].value;
       var id=(x[i].childNodes[2].id).substring(6,(x[i].childNodes[2].id).length);
@@ -111,15 +116,7 @@ $scope.EditPropertyHandler = function(category,Id,handle)
     else
     {
       var edgeId="" + src + "-" +dst
-      for (var i=0;i<alchemy._edges[edgeId].length;i++)
-      {
-        if (alchemy._edges[edgeId][i]._properties['handle']==handle)
-        {
-          element=alchemy._edges[edgeId][i];
-          break;
-        }
-      }
-      
+      element=alchemy._edges[edgeId][0];
     }
     for (var key in jsonObj) 
     {
@@ -133,7 +130,7 @@ $scope.EditPropertyHandler = function(category,Id,handle)
     
 };
 
-$scope.DeleteHandler=function(category,Id,handle)
+$scope.DeleteHandler=function(category,Id)
 {
   var iden="";
     var x=document.getElementById('editForm').childNodes;
@@ -156,16 +153,10 @@ $scope.DeleteHandler=function(category,Id,handle)
       }
       else
       {
-        for (var i=0;i<alchemy._edges[Id].length;i++)
-        {
-          if (alchemy._edges[Id][i]._properties['handle']==handle)
-          {
-            elementProps=alchemy._edges[Id][i]._properties
-            alchemy._edges[Id][i].remove()
-            break;
-          }
-          
-        }
+        var edge = alchemy.get.edges(Id);
+        console.log(edge);
+        elementProps=alchemy._edges[Id][0]._properties;
+        edge.remove()
       }
       var query={}
       query['type']='Delete';
@@ -189,117 +180,59 @@ $scope.DeleteHandler=function(category,Id,handle)
       });
     }; 
 
-    $scope.addMoreNodes = function (input)
-    {
-    var weaverGraphEndpoint = 'http://52.25.65.189:6363/graph/getNode/';
-    var retVal=$scope.editor.getValue();
-    var r1=retVal.split(',');
-    var query=r1[0].split(':')[1];
-    var number=r1[2].split(':')[1]
-    var direction=r1[1].split(':')[1];
-    $.getJSON(weaverGraphEndpoint, 
-      {
-          query: input,
-          number: number,
-          directionVal:direction
-      },function(data) 
-      {
-        var modifiedData=$scope.deleteDuplicates(data);
-        for (var i=0;i<modifiedData['nodes'].length;i++)
-        {
-           alchemy.create.nodes(modifiedData['nodes'][i]);
-           if ($window.nodesInWindow.indexOf(modifiedData['nodes'][i]['handle'])<0)
-            {
-              $window.nodesInWindow.push(modifiedData['nodes'][i]);
-              $scope.addPopOver(modifiedData['nodes'][i]);
-
-            }
-           
-        }
-        for (var i=0;i<modifiedData['edges'].length;i++)
-        {
-          alchemy.create.edges(modifiedData['edges'][i]);
-        }
-        alchemy.stats.nodeStats();
-        alchemy.stats.edgeStats();
-      });
-    }
-
-$scope.deleteDuplicates= function(data)
-{
-  var modifiedData={};
-  modifiedData['nodes']=[];
-  modifiedData['edges']=[];
-  for (var i=0;i<data['nodes'].length;i++)
-  {
-    if ($window.nodesInView.indexOf(data['nodes'][i]['handle'])<0)
-    {
-      modifiedData['nodes'].push(data['nodes'][i]);
-      $window.nodesInView.push(data['nodes'][i]['handle']);
-    }
-  }
-
-  for (var i=0;i<data['edges'].length;i++)
-  {
-    if ($window.edgesInView.indexOf(data['edges'][i]['handle'])<0)
-    {
-      modifiedData['edges'].push(data['edges'][i]);
-      $window.edgesInView.push(data['edges'][i]['handle'])
-    }
-  }
-  return modifiedData; 
-}
-   
-
-
     $scope.queryGraph=function()
     {
+      // var input=document.getElementById('weaver').value;
       var weaverGraphEndpoint = 'http://52.25.65.189:6363/graph/getNode/';
-      var retVal=$scope.editor.getValue();
-      var r1=retVal.split(',');
-      var query=r1[0].split(':')[1];
-      var direction=r1[1].split(':')[1]
-      var number=r1[2].split(':')[1];
-      $.getJSON(weaverGraphEndpoint, 
+       // console.log(JSON.parse();
+        var retVal=$scope.editor.getValue();
+        // console.log(retVal);
+        var r1=retVal.split(',');
+        var query=r1[0].split(':')[1];
+        var direction=r1[1].split(':')[1]
+        var number=r1[2].split(':')[1];
+        // console.log(query,number,direction);
+        $.getJSON(weaverGraphEndpoint, 
           {
               query: query,
               number: number,
+              overwrite:'1',
               directionVal: direction
           }, 
           function(data) 
           {
+              var config=$scope.config;
+              config.dataSource=data;
+              // console.log(data);
 
-            var config=$scope.config; 
-            $window.nodesInView=[]
-            $window.edgesInView=[]
-            var modifiedData=$scope.deleteDuplicates(data);
-            config.dataSource=modifiedData;
-            alchemy = new Alchemy(config);
-            for (var i=0;i<modifiedData['nodes'].length;i++)
+              alchemy = new Alchemy(config);
+
+            for (var i=0;i<data['nodes'].length;i++)
             {
-              if ($window.nodesInWindow.indexOf(modifiedData['nodes'][i]['handle'])<0)
-              {
-                $window.nodesInWindow.push(modifiedData['nodes'][i]['handle'])
-                $scope.addPopOver(modifiedData['nodes'][i]);
-              }
-              
+              $scope.addPopOver(data['nodes'][i]);
             }
+
+
+
               return false;
           });
 
     }
 
     $scope.initAlchemyConfig= function (config,graphId) {
-		config.divSelector="#"+graphId;
-		config.edgeTypes = "caption";
-		alchemy = new Alchemy(config);
+    config.divSelector="#"+graphId;
+    config.edgeTypes = "caption";
+    alchemy = new Alchemy(config);
+
     ngNotify.set('The current system is in alpha, Use it carefully! ', {
     type: 'warn',
     position:'top',
     duration: 500
     });
+
+
     return config;
-	};
+  };
 
   $scope.addKeyValNode=function()
   {
@@ -308,7 +241,15 @@ $scope.deleteDuplicates= function(data)
     d.innerHTML = text;
     var element=d.firstChild;
     document.getElementById('modalFormNode').appendChild(element); 
+  
   };
+
+  $scope.changeProps=function()
+  {
+    console.log(document.getElementsByClassName('SAME_SYNSET'));
+  
+  };
+
   $scope.addPopOver=function(elem)
   {
      var str="";
@@ -327,6 +268,7 @@ $scope.deleteDuplicates= function(data)
           img=img+key+" : "+dict[key]+"<br>";
         }
      }
+     
       var UID='node-'+elem['id'];
       var elem1=document.getElementById(UID);
       $(elem1).popover
@@ -468,20 +410,11 @@ $scope.deleteDuplicates= function(data)
         alchemy.stats.nodeStats();
         alchemy.stats.edgeStats();
 
-  	$scope.initialise = function() 
-    {
-   
+
+      });
+  }
     $scope.editor=$scope.createEditor('weaver');
     $scope.config = $scope.initAlchemyConfig(config,'graph');
-    
-    if (!$window.nodesInView)
-    {
-      $window.nodesInView=[]
-      $window.edgesInView=[]
-      $window.nodesInWindow=[]
-      $scope.edgesInWindow=[]
-    }
-    
     if (!$window.localStorage.username)
     {
       $rootScope.username='Mr. X'
@@ -493,6 +426,5 @@ $scope.deleteDuplicates= function(data)
       $rootScope.loggedIn=true
     }
     
-    }
     
   }]);
