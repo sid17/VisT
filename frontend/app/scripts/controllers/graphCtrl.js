@@ -254,7 +254,6 @@ $scope.deleteDuplicates= function(data)
 
     $scope.queryGraph=function()
     {
-<<<<<<< HEAD
       var weaverGraphEndpoint = 'http://52.25.65.189:6363/graph/getNode/';
       var retVal=$scope.editor.getValue();
       var r1=retVal.split(',');
