@@ -495,4 +495,4 @@ $scope.deleteDuplicates= function(data)
     
     }
     
-  });
+  }]);
