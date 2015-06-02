@@ -1,17 +1,6 @@
-<style>
-.fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 87px;
-  background-color: white;
-  height: 100%;
-  z-index:500;
-}
-</style>
-<div class='fixed'>
+<!-- <div class='fixed'>
     
-</div>
+</div> -->
 <div class="modal fade" id="myModalNode" tabindex="-1" role="dialog" aria-labelledby="myModalNodeLabel" aria-hidden="true" style="z-index:999999">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -95,7 +84,7 @@
 
 <link rel="stylesheet" href="styles/alchemy.css">
 
-<div class="container">
+<div class="container" ng-init="initialise()">
     <div class="row row-no-padding">
         <div class="col-md-12" style="background-color:white">
             <div class="row row-no-padding">
@@ -109,7 +98,7 @@
                 </div>
                 <div class="col-xs-1 nopadding" >
 
-    <button class="btn btn-primary" id='testNode' ng-click="queryGraph()"> <i class="glyphicon glyphicon-play" ></i>Run</button>
+    <button class="btn btn-primary pull-right" id='testNode' ng-click="queryGraph()"> <i class="glyphicon glyphicon-play" ></i>Run Query</button>
                 </div>
             </div>
             <div class="panel panel-primary">
@@ -118,10 +107,16 @@
                     <button class="btn btn-success" type="button">
                       NodeType
                     </button>
-                <div class="btn-group" id="nodeBadgeLoc">
-                    
-                </div>
+                    <div class="btn-group" id="nodeBadgeLoc">
+                        
+                    </div>
                 <br>
+                <button class="btn btn-success" type="button">
+                      Edge Type
+                    </button>
+                    <div class="btn-group" id="edgeBadgeLoc">
+                        
+                    </div>
                 </div>
                 <div class="panel-body col-md-12 nopadding">
                     <div class="alchemy" id="graph"></div>

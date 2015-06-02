@@ -1,4 +1,4 @@
-function WeaverNodeEditor(n,propsArray,category,Id)
+function WeaverNodeEditor(n,propsArray,category,Id,handle)
 {
   str="<form class='form-inline' id='editForm'><br>";
   dict=n.self._properties;
@@ -26,19 +26,19 @@ function WeaverNodeEditor(n,propsArray,category,Id)
   }
   document.getElementById('EditProps').onclick = function() 
   { 
-  (angular.element(document.getElementById('graphcontain').parentNode)).scope().EditPropertyHandlerIm(category,Id);
+  (angular.element(document.getElementById('graphcontain').parentNode)).scope().EditPropertyHandlerIm(category,Id,handle);
   };
 
   document.getElementById('SubmitProps').onclick = function() 
   { 
-  (angular.element(document.getElementById('graphcontain').parentNode)).scope().EditPropertyHandler(category,Id); 
+  (angular.element(document.getElementById('graphcontain').parentNode)).scope().EditPropertyHandler(category,Id,handle); 
   };
 
   if (category!='node')
   {
     document.getElementById('DeleteProps').onclick = function() 
   { 
-     (angular.element(document.getElementById('graphcontain').parentNode)).scope().DeleteHandler(category,Id);
+     (angular.element(document.getElementById('graphcontain').parentNode)).scope().DeleteHandler(category,Id,handle);
   };
   }
 }
@@ -462,7 +462,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         return clusterColoursObject;
       },
       allEdges: function() {
-        return this.a.elements.nodes.flat;
+        return this.a.elements.edges.flat;
       },
       allNodes: function(type) {
         if (type != null) {
@@ -1061,7 +1061,8 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     return {
       edgeClick: function(d) {
         var propsArray = ["source","target", "handle","id"];
-        WeaverNodeEditor(d,propsArray,'edge',d.id);
+        console.log('Edge Clicked is:',d);
+        WeaverNodeEditor(d,propsArray,'edge',d.id,d.self._properties['handle']);
         var edge;
         if (d3.event.defaultPrevented) {
           return;
@@ -1128,7 +1129,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       nodeClick: function(n) {
 
         var propsArray = ["handle","mediapath", "labels","id"]
-        WeaverNodeEditor(n,propsArray,'node',0);
+        WeaverNodeEditor(n,propsArray,'node',0,"");
         var node;
         if (d3.event.defaultPrevented) {
           return;
@@ -1591,42 +1592,14 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       if (conf.nodeStats) {
         a.stats.nodeStats();
       }
+      if (conf.edgeStats) {
+        a.stats.edgeStats();
+      }
+
       var content='Random Stuff';
       var iterate;
-      // for (iterate=0;iterate<d3Nodes.length;iterate=iterate+1)
-      // {
-      //      var str="";
-      //      var img="";
-      //      var dict=d3Nodes[iterate].self._properties;
-      //      for (var key in dict)
-      //      {
-      //         str=str+key+" : "+dict[key]+"<br>";
-      //         if (key=='mediapath')
-      //         {
-      //           url='http://d1rygkc2z32bg1.cloudfront.net/'+dict[key];
-      //           img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
-      //         }
-      //         else if (key=='handle' || key=='labels')
-      //         {
-      //           img=img+key+" : "+dict[key]+"<br>";
-                
-      //         }
-      //      }
-      //       UID='node-'+d3Nodes[iterate].id;
-      //       elem=document.getElementById(UID);
-      //       $(elem).popover
-      //       ({
-      //         'show': true,
-      //         'trigger': 'hover',
-      //         'container':'body',
-      //         'placement': 'right',
-      //         'content': img,
-      //          'html': true,
-      //       });
-      // }
+      
       document.getElementById('stats').style.display='none';
-      // document.getElementById('control-dash').style.display='none';
-      // console.log('StartGraph');
       return a.initial = true;
 
     };
@@ -1677,7 +1650,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         }
         nodeGraph = "<li id='node-stats-graph' class='list-group-item'></li>";
         nodeStats += nodeGraph;
-        // a.dash.select('#node-stats').html(nodeStats);
         return this.insertSVG("node", nodeData);
       },
       edgeStats: function() {
@@ -1687,21 +1659,22 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         activeEdges = a.get.activeEdges().length;
         inactiveEdges = allEdges - activeEdges;
         edgeStats = "<li class = 'list-group-item gen_edge_stat'>Number of relationships: <span class='badge'>" + allEdges + "</span></li> <li class = 'list-group-item gen_edge_stat'>Number of active relationships: <span class='badge'>" + activeEdges + "</span></li> <li class = 'list-group-item gen_edge_stat'>Number of inactive relationships: <span class='badge'>" + inactiveEdges + "</span></li></br>";
-        if (a.conf.edgeTypes) {
-          edgeKeys = _.values(alchemy.conf.edgeTypes)[0];
+        if (alchemy.conf.edgeTypes) {
+          edgeKeys=Object.keys(a.conf.edgeCategory);
           edgeTypes = '';
-          for (_i = 0, _len = edgeKeys.length; _i < _len; _i++) {
-            edgeType = edgeKeys[_i];
+          _ref = a.conf.edgeCategory[edgeKeys];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            edgeType = _ref[_i];
             if (!edgeType) {
               continue;
             }
             caption = edgeType.replace('_', ' ');
             edgeNum = _.filter(a.get.allEdges(), function(edge) {
-              if (edge._edgeType === edgeType) {
+              if (edge._properties['type'] === edgeType) {
                 return edge;
               }
             }).length;
-
+            
 
             if (edgeNum>0)
             {
@@ -1712,7 +1685,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
               else
               {
               div = document.getElementById('edgeBadgeLoc');    
-              div.insertAdjacentHTML('beforeend', "<button class=\"btn btn-primary\" type=\"button\" id='legend-"+edgeType+"'>"+caption+"<span class=\"badge\">"+edgeNum+"</span></button>");
+              div.insertAdjacentHTML('beforeend', "<button class=\"btn btn-success\" type=\"button\" id='legendEdge-"+edgeType+"'>"+caption+"<span class=\"badge\">"+edgeNum+"</span></button>");
 
               }
 
@@ -1864,6 +1837,7 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     nodeMouseOver: 'caption',
     nodeRadius: 10,
     nodeTypes: null,
+    edgeCategory:null,
     rootNodes: 'root',
     rootNodeRadius: 15,
     nodeClick: null,
@@ -2148,7 +2122,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
         }).attr('source-target', function(d) {
           return "" + d.source.id + "-" + d.target.id;
         });
-        // console.log('Done');
         drawEdge.createLink(d3edges);
         drawEdge.classEdge(d3edges);
         drawEdge.styleLink(d3edges);
@@ -2159,8 +2132,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       updateEdge: function(d3Edge) {
         var drawEdge, edge;
         drawEdge = this.a.drawing.DrawEdge;
-        // console.log(d3Edge)
-        // console.log(d3Edge.id + "-" + d3Edge.pos);
         edge = this.a.vis.select("#edge-" + d3Edge.id + "-" + d3Edge.pos);
         drawEdge.classEdge(edge);
         drawEdge.styleLink(edge);
@@ -2276,8 +2247,6 @@ function WeaverNodeEditor(n,propsArray,category,Id)
     return {
       a: instance,
       createNode: function(d3Nodes) {
-        // console.log('here');
-        // console.log(d3Nodes);
         var drawNode, node;
         drawNode = this.a.drawing.DrawNode;
         node = this.a.vis.selectAll("g.node").data(d3Nodes, function(n) {
@@ -2406,9 +2375,15 @@ function WeaverNodeEditor(n,propsArray,category,Id)
               return inp;
             };
           };
-
-          // console.log('1:',edge);
+          
+          if (!edge)
+          {
+            return;
+          }
+          
           edgeType = edge._edgeType;
+          
+          
           if (conf.edgeStyle[edgeType] === void 0) {
             edgeType = "all";
           }
@@ -3168,17 +3143,19 @@ function WeaverNodeEditor(n,propsArray,category,Id)
       Edge.prototype.remove = function() {
         var edge, filteredLinkList;
         edge = this;
-        delete this.a._edges[edge.id];
+        delete this.a._edges[edge.id][edge._index];
         if (this.a._nodes[edge._properties.source] != null) {
           _.remove(this.a._nodes[edge._properties.source]._adjacentEdges, function(e) {
-            if (e.id === edge.id) {
+            if (e.id === edge.id && e._index === edge._index) {
+             // console.log(e);
               return e;
             }
           });
         }
         if (this.a._nodes[edge._properties.target] != null) {
           _.remove(this.a._nodes[edge._properties.target]._adjacentEdges, function(e) {
-            if (e.id === edge.id) {
+            if (e.id === edge.id && e._index === edge._index) {
+              // console.log(e);
               return e;
             }
           });
