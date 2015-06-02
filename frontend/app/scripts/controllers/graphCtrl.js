@@ -183,7 +183,7 @@ $scope.DeleteHandler=function(category,Id)
     $scope.queryGraph=function()
     {
       // var input=document.getElementById('weaver').value;
-      var weaverGraphEndpoint = 'http://52.25.65.189:8000/graph/getNode/';
+      var weaverGraphEndpoint = 'http://52.25.65.189:6363/graph/getNode/';
        // console.log(JSON.parse();
         var retVal=$scope.editor.getValue();
         // console.log(retVal);
@@ -364,7 +364,7 @@ $scope.DeleteHandler=function(category,Id)
   };
   $scope.addMoreNodes=function(input)
   {
-    var weaverGraphEndpoint = 'http://52.25.65.189:8000/graph/getNode/';
+    var weaverGraphEndpoint = 'http://52.25.65.189:6363/graph/getNode/';
     
     var retVal=$scope.editor.getValue();
     var r1=retVal.split(',');
