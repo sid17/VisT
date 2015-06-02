@@ -420,8 +420,6 @@ $scope.deleteDuplicates= function(data)
     document.getElementById('modalFormEdge').appendChild(element); 
   
   };
-<<<<<<< HEAD
-=======
   $scope.addMoreNodes=function(input)
   {
     var weaverGraphEndpoint = 'http://52.25.65.189:6363/graph/getNode/';
@@ -469,7 +467,6 @@ $scope.deleteDuplicates= function(data)
         }
         alchemy.stats.nodeStats();
         alchemy.stats.edgeStats();
->>>>>>> d5544bd5058d13d84299cd2c6c4dc278e727d313
 
   	$scope.initialise = function() 
     {
