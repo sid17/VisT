@@ -222,6 +222,7 @@ $scope.DeleteHandler=function(category,Id)
     $scope.initAlchemyConfig= function (config,graphId) {
     config.divSelector="#"+graphId;
     config.edgeTypes = "caption";
+    console.log(config)
     alchemy = new Alchemy(config);
 
     ngNotify.set('The current system is in alpha, Use it carefully! ', {

@@ -5,7 +5,7 @@ var config = {
   rootNodeRadius: 30,
   fixNodes:false,  // nodes cannot be dragged if this is set to true
   fixRootNodes:false,
-  graphHeight: function(){ return window.innerHeight-280; },
+  graphHeight: function(){ return 380; },
   // graphWidth: function(){ return window.innerWidth },
   showControlDash: true,
   // showStats: false,
