@@ -183,8 +183,9 @@ $scope.DeleteHandler=function(category,Id)
     $scope.queryGraph=function()
     {
       // var input=document.getElementById('weaver').value;
-      var weaverGraphEndpoint = 'http://52.25.65.189:6363/graph/getNode/';
+      var weaverGraphEndpoint = $scope.config.graphEndPoint;
        // console.log(JSON.parse();
+        $scope.config.forceLocked=false;
         var retVal=$scope.editor.getValue();
         // console.log(retVal);
         var r1=retVal.split(',');
@@ -211,10 +212,10 @@ $scope.DeleteHandler=function(category,Id)
             {
               $scope.addPopOver(data['nodes'][i]);
             }
+            // console.log('hello');
+            alchemy.conf.forceLocked=true;
 
-
-
-              return false;
+            return false;
           });
 
     }
@@ -222,18 +223,16 @@ $scope.DeleteHandler=function(category,Id)
     $scope.initAlchemyConfig= function (config,graphId) {
     config.divSelector="#"+graphId;
     config.edgeTypes = "caption";
-    console.log(config)
     alchemy = new Alchemy(config);
-
     ngNotify.set('The current system is in alpha, Use it carefully! ', {
     type: 'warn',
     position:'top',
     duration: 500
     });
-
-
     return config;
   };
+
+
 
   $scope.addKeyValNode=function()
   {
@@ -245,12 +244,6 @@ $scope.DeleteHandler=function(category,Id)
   
   };
 
-  $scope.changeProps=function()
-  {
-    console.log(document.getElementsByClassName('SAME_SYNSET'));
-  
-  };
-
   $scope.addPopOver=function(elem)
   {
      var str="";
@@ -259,12 +252,12 @@ $scope.DeleteHandler=function(category,Id)
      for (var key in dict)
      {
         str=str+key+" : "+dict[key]+"<br>";
-        if (key=='mediapath')
+        if ($scope.config.popOverImgElements.indexOf(key) > -1)
         {
-          var url='http://d1rygkc2z32bg1.cloudfront.net/'+dict[key];
+          var url=$scope.config.imgPrependURL+dict[key];
           img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
         }
-        else if (key=='handle' || key=='labels')
+        else if ($scope.config.popOverTextElements.indexOf(key) > -1)
         {
           img=img+key+" : "+dict[key]+"<br>";
         }
@@ -365,7 +358,7 @@ $scope.DeleteHandler=function(category,Id)
   };
   $scope.addMoreNodes=function(input)
   {
-    var weaverGraphEndpoint = 'http://52.25.65.189:6363/graph/getNode/';
+    var weaverGraphEndpoint = $scope.config.graphEndPoint;
     
     var retVal=$scope.editor.getValue();
     var r1=retVal.split(',');
@@ -416,6 +409,7 @@ $scope.DeleteHandler=function(category,Id)
   }
     $scope.editor=$scope.createEditor('weaver');
     $scope.config = $scope.initAlchemyConfig(config,'graph');
+
     if (!$window.localStorage.username)
     {
       $rootScope.username='Mr. X'

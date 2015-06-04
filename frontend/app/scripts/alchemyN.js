@@ -1060,7 +1060,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
     a = instance;
     return {
       edgeClick: function(d) {
-        var propsArray = ["source","target", "handle","id"];
+        var propsArray = a.conf.editGraphPropsEdge;
         console.log('Edge Clicked is:',d);
         WeaverNodeEditor(d,propsArray,'edge',d.id,d.self._properties['handle']);
         var edge;
@@ -1128,7 +1128,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
       },
       nodeClick: function(n) {
 
-        var propsArray = ["handle","mediapath", "labels","id"]
+        var propsArray = a.conf.editGraphPropsNode;
         WeaverNodeEditor(n,propsArray,'node',0,"");
         var node;
         if (d3.event.defaultPrevented) {
@@ -1670,7 +1670,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
             }
             caption = edgeType.replace('_', ' ');
             edgeNum = _.filter(a.get.allEdges(), function(edge) {
-              if (edge._properties['type'] === edgeType) {
+              if (edge._properties[edgeKeys[0]] === edgeType) {
                 return edge;
               }
             }).length;
