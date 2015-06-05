@@ -5,7 +5,6 @@ from django.views.decorators.csrf import csrf_exempt
 from auth.models import Token
 from auth.utils import json_response, token_required
 
-
 @csrf_exempt
 def register(request):
     if request.method == 'POST':
@@ -103,4 +102,3 @@ def process(request):
         return json_response({
             'error': 'Invalid Method'
         }, status=405)
-    

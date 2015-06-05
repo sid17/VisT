@@ -1462,9 +1462,11 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
     return {
       init: function() {
         var searchBox;
+        console.log('height123');
         searchBox = a.dash.select("#search input");
         return searchBox.on("keyup", function() {
           var input;
+          console.log('height');
           input = searchBox[0][0].value.toLowerCase();
           a.vis.selectAll(".node").classed("inactive", false);
           a.vis.selectAll("text").attr("style", function() {

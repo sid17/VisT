@@ -130,7 +130,7 @@ $scope.EditPropertyHandler = function(category,Id)
     
 };
 
-$scope.DeleteHandler=function(category,Id)
+$scope.DeleteHandler=function(category,Id,handle)
 {
   var iden="";
     var x=document.getElementById('editForm').childNodes;
@@ -153,10 +153,16 @@ $scope.DeleteHandler=function(category,Id)
       }
       else
       {
-        var edge = alchemy.get.edges(Id);
-        console.log(edge);
-        elementProps=alchemy._edges[Id][0]._properties;
-        edge.remove()
+        var element;
+        for (var i=0;i<alchemy._edges[Id].length;i++)
+        {
+          if (alchemy._edges[Id][i]._properties['handle']==handle)
+          {
+            element=alchemy._edges[Id][i];
+          }
+        }
+        element.remove();
+        
       }
       var query={}
       query['type']='Delete';
