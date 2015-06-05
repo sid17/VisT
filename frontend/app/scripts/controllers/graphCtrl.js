@@ -19,7 +19,6 @@ angular.module('visualisationTool')
   {
       $rootScope.queryContents=query
       query=JSON.stringify(query);
-      console.log(query);
       AuthService.submitToLog().then(
       function (retVal) {
         if (retVal && retVal.data.status && retVal.data.status=='success')
@@ -42,7 +41,7 @@ angular.module('visualisationTool')
     );
   };
 
-$scope.EditPropertyHandlerIm=function(category,Id)
+$scope.EditPropertyHandlerIm=function(category,Id,handle)
 {
   document.getElementById('EditProps').style.display='none';
     if (category!='node')
@@ -61,7 +60,7 @@ $scope.EditPropertyHandlerIm=function(category,Id)
     }
 };
 
-$scope.EditPropertyHandler = function(category,Id)
+$scope.EditPropertyHandler = function(category,Id,handle)
 {
   document.getElementById('SubmitProps').style.display='none';
     var x=document.getElementById('editForm').childNodes;
@@ -115,12 +114,45 @@ $scope.EditPropertyHandler = function(category,Id)
     }
     else
     {
-      var edgeId="" + src + "-" +dst
-      element=alchemy._edges[edgeId][0];
+      var element;
+      for (var i=0;i<alchemy._edges[Id].length;i++)
+      {
+        
+        if (alchemy._edges[Id][i]._properties['handle']==handle)
+        {
+          element=alchemy._edges[Id][i];
+          break;
+        }
+      }
+
+        
+      // var edgeId="" + src + "-" +dst
+      // element=alchemy._edges[edgeId][0];
     }
     for (var key in jsonObj) 
     {
        element._properties[key]=jsonObj[key];
+    }
+    if (dataCategory=='node')
+    {
+
+     var img="";
+     var dict=element._properties;
+     for (var key in dict)
+     {
+        str=str+key+" : "+dict[key]+"<br>";
+        if ($scope.config.popOverImgElements.indexOf(key) > -1)
+        {
+          var url=$scope.config.imgPrependURL+dict[key];
+          img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
+        }
+        else if ($scope.config.popOverTextElements.indexOf(key) > -1)
+        {
+          img=img+key+" : "+dict[key]+"<br>";
+        }
+     }
+
+      $(document.getElementById('node-'+element._properties['id'])).data('bs.popover').options.content=img;
     }
     var query={}
     query['type']='update';
@@ -156,9 +188,11 @@ $scope.DeleteHandler=function(category,Id,handle)
         var element;
         for (var i=0;i<alchemy._edges[Id].length;i++)
         {
+          
           if (alchemy._edges[Id][i]._properties['handle']==handle)
           {
             element=alchemy._edges[Id][i];
+            break;
           }
         }
         element.remove();
@@ -188,9 +222,10 @@ $scope.DeleteHandler=function(category,Id,handle)
 
     $scope.queryGraph=function()
     {
-      // var input=document.getElementById('weaver').value;
+      var childNode=document.getElementById('graph').childNodes[0];
+      childNode.parentNode.removeChild(childNode);
+
       var weaverGraphEndpoint = $scope.config.graphEndPoint;
-       // console.log(JSON.parse();
         $scope.config.forceLocked=false;
         var retVal=$scope.editor.getValue();
         // console.log(retVal);
@@ -268,7 +303,7 @@ $scope.DeleteHandler=function(category,Id,handle)
           img=img+key+" : "+dict[key]+"<br>";
         }
      }
-     
+    
       var UID='node-'+elem['id'];
       var elem1=document.getElementById(UID);
       $(elem1).popover
@@ -280,6 +315,7 @@ $scope.DeleteHandler=function(category,Id,handle)
         'content': img,
          'html': true,
       });
+
   };
   $scope.hashFn=function(str)
   {

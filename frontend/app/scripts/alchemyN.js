@@ -3149,7 +3149,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         if (this.a._nodes[edge._properties.source] != null) {
           _.remove(this.a._nodes[edge._properties.source]._adjacentEdges, function(e) {
             if (e.id === edge.id && e._index === edge._index) {
-             // console.log(e);
+             console.log(e);
               return e;
             }
           });

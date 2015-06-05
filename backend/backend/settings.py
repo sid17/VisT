@@ -38,20 +38,26 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'auth',
     'graph',
+    'corsheaders'
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'backend.urls'
 
 WSGI_APPLICATION = 'backend.wsgi.application'
+
 
 
 # Database
