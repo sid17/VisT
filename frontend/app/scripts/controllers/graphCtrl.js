@@ -502,6 +502,7 @@ $scope.DeleteHandler=function(category,Id,handle)
   }
     $scope.editor=$scope.createEditor('weaver');
     $scope.config = $scope.initAlchemyConfig(config,'graph');
+    $scope.inViewEdges={}
 
     if (!$window.localStorage.username)
     {
