@@ -82,6 +82,48 @@
 
 
 
+<div class="modal fade" id="styleNodeEdge" tabindex="-1" role="dialog" aria-labelledby="styleNodeLabel" aria-hidden="true" style="z-index:999999">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="styleNodeLabel">Node Style Interface</h4>
+      </div>
+      <div class="modal-body">
+       
+  <form id="modalStyleNode">
+  <div class="form-group">
+
+
+
+<h2>Full Example</h2>
+<input type='text' id="full"/>
+
+<script src="scripts/colorpallet.js"></script>
+  </div>
+ </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="styleNodeEdge()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 <link rel="stylesheet" href="styles/alchemy.css">
 
 <div class="container" ng-init="initialise()">
@@ -90,7 +132,7 @@
             <div class="row row-no-padding">
                 <div class="col-xs-11">
                     <div id="graphcontain">
-                      <textarea name="weaver" id="weaver" rows="4" cols="120" data-lang="cypher" class="code form-control">search:phone,direction:F,limit:10
+                      <textarea name="weaver" id="weaver" rows="4" cols="120" data-lang="cypher" class="code form-control">search:phone,direction:U,limit:10
                        </textarea>
   <!-- <button ng-click="queryGraph()">Exec</button> -->
   <!-- <i class="fa fa-play-circle-o"></i> -->

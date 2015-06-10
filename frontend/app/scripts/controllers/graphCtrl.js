@@ -15,6 +15,55 @@ angular.module('visualisationTool')
     );
   };
 
+$scope.styleNodeEdge =function()
+{
+  var str=$window.currentStyleElementType;
+  var x=str.substring(0,str.indexOf('-')); 
+  var y=str.substring(str.indexOf('-')+1,str.length); 
+  var color=document.getElementById('full').value;
+  var dict;
+  if (x=='legend')
+  {
+    dict=alchemy._nodes;
+    for (var key in dict)
+    {
+      var node=dict[key];
+      if (node._properties['type']==y)
+      {
+        
+        node._style['color']=color;
+        node.setStyles();
+        // node.setStyles('borderColor',color);
+
+      }
+      
+    }
+  }
+  else
+  {
+     dict=alchemy._edges;
+     for (var key in dict)
+    {
+      for (var i=0;i<dict[key].length;i++)
+      {
+        var edge=dict[key][i];
+        if (edge._properties['type']==y)
+        {
+          console.log('TRUE');
+  
+          edge._style['stroke']='black';
+          edge._style['color']='black';
+          console.log(edge._style)
+          edge.setStyles();
+
+        }
+      }
+    }    
+  }
+
+  
+  $('#styleNodeEdge').modal('hide');
+}
   $rootScope.writeToLog = function (query) 
   {
       $rootScope.queryContents=query
@@ -125,7 +174,7 @@ $scope.EditPropertyHandler = function(category,Id,handle)
         }
       }
 
-        
+
       // var edgeId="" + src + "-" +dst
       // element=alchemy._edges[edgeId][0];
     }
@@ -145,6 +194,7 @@ $scope.EditPropertyHandler = function(category,Id,handle)
         {
           var url=$scope.config.imgPrependURL+dict[key];
           img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
+          console.log(url);
         }
         else if ($scope.config.popOverTextElements.indexOf(key) > -1)
         {
@@ -226,7 +276,7 @@ $scope.DeleteHandler=function(category,Id,handle)
       childNode.parentNode.removeChild(childNode);
 
       var weaverGraphEndpoint = $scope.config.graphEndPoint;
-        $scope.config.forceLocked=false;
+        $scope.config.friction=0.9;
         var retVal=$scope.editor.getValue();
         // console.log(retVal);
         var r1=retVal.split(',');
@@ -254,7 +304,7 @@ $scope.DeleteHandler=function(category,Id,handle)
               $scope.addPopOver(data['nodes'][i]);
             }
             // console.log('hello');
-            alchemy.conf.forceLocked=true;
+            // alchemy.conf.friction=0.7;
 
             return false;
           });
@@ -297,6 +347,7 @@ $scope.DeleteHandler=function(category,Id,handle)
         {
           var url=$scope.config.imgPrependURL+dict[key];
           img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
+          console.log(url);
         }
         else if ($scope.config.popOverTextElements.indexOf(key) > -1)
         {

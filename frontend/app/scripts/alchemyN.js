@@ -593,7 +593,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         }
       };
       _friction = function() {
-        return 0.7;
+        return 0.9;
       };
       _linkDistancefn = function(edge) {
         nodes = edge.self.a._nodes;
@@ -1061,7 +1061,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
     return {
       edgeClick: function(d) {
         var propsArray = a.conf.editGraphPropsEdge;
-        console.log('Edge Clicked is:',d);
+        // console.log('Edge Clicked is:',d);
         WeaverNodeEditor(d,propsArray,'edge',d.id,d.self._properties['handle']);
         var edge;
         if (d3.event.defaultPrevented) {
@@ -1098,8 +1098,10 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         }
       },
       nodeMouseOver: function(n) {
+
         var node;
         node = n.self;
+
         if (node._state !== "hidden") {
           if (node._state !== "selected") {
             node._state = "highlighted";
@@ -1344,7 +1346,8 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
     };
 
     Layout.prototype.friction = function() {
-      return 0.9;
+      console.log('friction is:',this.a.conf.friction);
+      return this.a.conf.friction;
     };
 
     Layout.prototype.collide = function(node) {
@@ -1462,21 +1465,16 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
     return {
       init: function() {
         var searchBox;
-        console.log('height123');
+        // console.log('height123');
         searchBox = a.dash.select("#search input");
         return searchBox.on("keyup", function() {
           var input;
-          console.log('height');
           input = searchBox[0][0].value.toLowerCase();
           a.vis.selectAll(".node").classed("inactive", false);
-          a.vis.selectAll("text").attr("style", function() {
-            if (input !== "") {
-              return "display: inline;";
-            }
-          });
           return a.vis.selectAll(".node").classed("inactive", function(node) {
             var DOMtext, hidden;
-            DOMtext = d3.select(this).text();
+            DOMtext = d3.select(this)[0][0].__data__.self._properties.handle[0];
+            var textElement=d3.select(this)[0][0].childNodes[1];
             switch (a.conf.searchMethod) {
               case 'contains':
                 hidden = DOMtext.toLowerCase().indexOf(input) < 0;
@@ -1484,6 +1482,22 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
               case 'begins':
                 hidden = DOMtext.toLowerCase().indexOf(input) !== 0;
             }
+            if (input=="")
+            {
+              console.log(textElement);
+              textElement.innerHTML='';
+              return;
+            }
+
+            if (!hidden)
+            {
+              textElement.innerHTML=DOMtext;
+            }
+            else
+            {
+              textElement.innerHTML='';
+            }
+
             if (hidden) {
               a.vis.selectAll("[source-target*='" + node.id + "']").classed("inactive", hidden);
             } else {
@@ -1495,6 +1509,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
                 return targetHidden || sourceHidden;
               });
             }
+
             return hidden;
           });
         });
@@ -1640,6 +1655,11 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
               {
               div = document.getElementById('nodeBadgeLoc');    
               div.insertAdjacentHTML('beforeend', "<button class=\"btn btn-success\" type=\"button\" id='legend-"+nodeType+"'>"+caption+"<span class=\"badge\">"+nodeNum+"</span></button>");
+              document.getElementById("legend-"+nodeType).onclick = function () 
+              {
+                $('#styleNodeEdge').modal('show');
+                window.currentStyleElementType=this.id
+              }
 
               }
 
@@ -1688,6 +1708,12 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
               {
               div = document.getElementById('edgeBadgeLoc');    
               div.insertAdjacentHTML('beforeend', "<button class=\"btn btn-success\" type=\"button\" id='legendEdge-"+edgeType+"'>"+caption+"<span class=\"badge\">"+edgeNum+"</span></button>");
+              document.getElementById("legendEdge-"+edgeType).onclick = function () 
+              {
+                $('#styleNodeEdge').modal('show');
+                window.currentStyleElementType=this.id
+
+              }
 
               }
 
@@ -2053,6 +2079,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         }
       },
       styleLink: function(edges) {
+
         var a, conf, utils;
         a = this.a;
         conf = a.conf;
@@ -2060,6 +2087,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         return edges.each(function(edge) {
           var edgeData, g;
           g = d3.select(this);
+          // console.log(utils.edgeStyle(edge));
           edgeData = utils.edgeData(edge);
           g.attr('transform', "translate(" + edge.source.x + ", " + edge.source.y + ") rotate(" + (utils.edgeAngle(edge)) + ")");
           return g.select('.edge-line').attr('d', (function() {
@@ -2157,12 +2185,6 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
           } else {
             return conf.nodeRadius * 2 - 5;
           }
-        }).attr('visibility', function(d) {
-          if (nodes[d.id]._state === "hidden") {
-            return "hidden";
-          } else {
-            return "visible";
-          }
         }).text(function(d) {
           return utils.nodeText(d);
         }).style("display", function(d) {
@@ -2183,8 +2205,11 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         });
       },
       styleNode: function(node) {
+        // console.log(node);
         var utils;
         utils = this.a.drawing.NodeUtils;
+
+
         return node.selectAll('circle').attr('r', function(d) {
           if (typeof d.radius === "function") {
             return d.radius();
@@ -2192,7 +2217,8 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
             return d.radius;
           }
         }).each(function(d) {
-          return d3.select(this).style(utils.nodeStyle(d));
+          // console.log(d3.select(this)[0][0].__data__.fill);
+          return d3.select(this).style(d);
         });
       },
       setInteractions: function(node) {
@@ -2288,20 +2314,21 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         var conf, node;
         conf = a.conf;
         node = d.self;
-        if (conf.cluster && (node._state !== "hidden")) {
-          d.fill = (function(d) {
-            var clusterMap, clustering, colour, colourIndex, colours, key, nodeProp;
-            clustering = a.layout._clustering;
-            nodeProp = node.getProperties();
-            clusterMap = clustering.clusterMap;
-            key = conf.clusterKey;
-            colours = conf.clusterColours;
-            colourIndex = clusterMap[nodeProp[key]] % colours.length;
-            colour = colours[colourIndex];
-            return "" + colour;
-          })(d);
-          d.stroke = d.fill;
-        }
+        // console.log(d);
+        // if (conf.cluster && (node._state !== "hidden")) {
+        //   d.fill = (function(d) {
+        //     var clusterMap, clustering, colour, colourIndex, colours, key, nodeProp;
+        //     clustering = a.layout._clustering;
+        //     nodeProp = node.getProperties();
+        //     clusterMap = clustering.clusterMap;
+        //     key = conf.clusterKey;
+        //     colours = conf.clusterColours;
+        //     colourIndex = clusterMap[nodeProp[key]] % colours.length;
+        //     colour = colours[colourIndex];
+        //     return "" + colour;
+        //   })(d);
+        //   d.stroke = d.fill;
+        // }
         return d;
       },
       nodeText: function(d) {
@@ -3113,6 +3140,8 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
       };
 
       Edge.prototype.setStyles = function(key, value) {
+
+        // console.log(key,value);
         if (value == null) {
           value = null;
         }
@@ -3149,7 +3178,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         if (this.a._nodes[edge._properties.source] != null) {
           _.remove(this.a._nodes[edge._properties.source]._adjacentEdges, function(e) {
             if (e.id === edge.id && e._index === edge._index) {
-             console.log(e);
+             // console.log(e);
               return e;
             }
           });

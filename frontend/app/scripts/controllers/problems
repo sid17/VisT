@@ -5,7 +5,7 @@
 5) will not look good on all platforms( fixed element) ***********
 6) edge types is not being displayed ***********
 7) allow to change style elements for different handles
-8) search does not worl so far
+8) search does not worl so far **************
 9) update pop over elements after updating their property ****************
 10) cannot have id attribute for edges
 11) changing property assumes unique edge between 2 nodes and assigns properties to the root node number 0
@@ -15,3 +15,6 @@
 15) check that no space between the names or replace all the space by underscore
 16) replace nodeIds with handle names in the graph
 17) node addition remember what should the id be
+
+18) in case of search the handle used is handle[0]
+confirm data types for weaver elements
