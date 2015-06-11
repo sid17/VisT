@@ -31,13 +31,16 @@ $scope.styleNodeEdge =function()
       if (node._properties['type']==y)
       {
         
-        node._style['color']=color;
+        $window.nodeColorMap[node.id]=color;
         node.setStyles();
+        // node._style['color']=color;
+        
         // node.setStyles('borderColor',color);
 
       }
       
     }
+    console.log($window.nodeColorMap);
   }
   else
   {
@@ -49,15 +52,18 @@ $scope.styleNodeEdge =function()
         var edge=dict[key][i];
         if (edge._properties['type']==y)
         {
-          console.log('TRUE');
-  
-          edge._style['stroke']='black';
-          edge._style['color']='black';
-          console.log(edge._style)
+          // console.log('TRUE');
+          console.log(edge);
+          // edge._style['stroke']='black';
+          // edge._style['color']='black';
+          // console.log(edge._style)
+          // console.log(edge.id);
+          $window.edgeColorMap[edge.id+edge._index]=color;
           edge.setStyles();
 
         }
       }
+      console.log($window.edgeColorMap);
     }    
   }
 
@@ -270,13 +276,42 @@ $scope.DeleteHandler=function(category,Id,handle)
       });
     }; 
 
+    $scope.removeDuplicates=function(data)
+    {
+      var edges=[];
+      var nodes=[];
+      for (var i=0;i<data['edges'].length;i++)
+      {
+        if ($scope.inViewEdges.indexOf(data['edges'][i]['handle']) < 0)
+        {
+          $scope.inViewEdges.push(data['edges'][i]['handle'])
+          edges.push(data['edges'][i]);
+        }
+      }
+
+
+      for (var i=0;i<data['nodes'].length;i++)
+      {
+        if ($scope.inViewNodes.indexOf(data['nodes'][i]['handle'][0]) < 0)
+        {
+          $scope.inViewNodes.push(data['nodes'][i]['handle'][0])
+          nodes.push(data['nodes'][i]);
+        }
+      }
+      // console.log(nodes);
+      // console.log(edges);
+      data['nodes']=nodes;
+      data['edges']=edges;
+      return data;
+    };
     $scope.queryGraph=function()
     {
       var childNode=document.getElementById('graph').childNodes[0];
       childNode.parentNode.removeChild(childNode);
-
+      $scope.inViewEdges=[];
+      $scope.inViewNodes=[];
       var weaverGraphEndpoint = $scope.config.graphEndPoint;
-        $scope.config.friction=0.9;
+        // $scope.config.friction=0.9;
         var retVal=$scope.editor.getValue();
         // console.log(retVal);
         var r1=retVal.split(',');
@@ -293,6 +328,7 @@ $scope.DeleteHandler=function(category,Id,handle)
           }, 
           function(data) 
           {
+              data=$scope.removeDuplicates(data)
               var config=$scope.config;
               config.dataSource=data;
               // console.log(data);
@@ -347,7 +383,7 @@ $scope.DeleteHandler=function(category,Id,handle)
         {
           var url=$scope.config.imgPrependURL+dict[key];
           img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
-          console.log(url);
+          // console.log(url);
         }
         else if ($scope.config.popOverTextElements.indexOf(key) > -1)
         {
@@ -468,32 +504,47 @@ $scope.DeleteHandler=function(category,Id,handle)
           directionVal:direction
       },function(data) 
       {
-        for (var i=0;i<data['nodes'].length;i++)
-        {
-          if (alchemy.get.nodes(data['nodes'][i].id).api.length==1)
-          {
-            ;
-          }
-          else
-          {
-            alchemy.create.nodes(data['nodes'][i]);
-            $scope.addPopOver(data['nodes'][i]);
-          }
-        }
+        data=$scope.removeDuplicates(data);
+        alchemy.create.graph(data);
+        // if (data['nodes'].length>0)
+        // {
+        //   console.log('>0 Nodes');
+        //   alchemy.create.nodes(data['nodes']);
+        // }
+        // if (data['edges'].length>0)
+        // {
+        //   console.log('>0 Edges');
+        //   alchemy.create.graph(data['edges']);
+        // }
+        
 
-        for (var i=0;i<data['edges'].length;i++)
-        {
-          var edgeId="" + data['edges'][i].source + "-" +data['edges'][i].target;
-          if (alchemy.get.edges(edgeId).api.length==1)
-          {
-            ;
-          }
-          else
-          {
+      //   for (var i=0;i<data['nodes'].length;i++)
+      //   {
+          
+      // if (alchemy.get.nodes(data['nodes'][i].id).api.length==1)
+      //     {
+      //       ;
+      //     }
+      //     else
+      //     {
+      //       alchemy.create.nodes(data['nodes'][i]);
+      //       $scope.addPopOver(data['nodes'][i]);
+      //     }
+      //   }
 
-            alchemy.create.edges(data['edges'][i]);
-          }
-        }
+        // for (var i=0;i<data['edges'].length;i++)
+        // {
+        //   var edgeId="" + data['edges'][i].source + "-" +data['edges'][i].target;
+        //   if (alchemy.get.edges(edgeId).api.length==1)
+        //   {
+        //     ;
+        //   }
+        //   else
+        //   {
+
+        //     alchemy.create.edges(data['edges'][i]);
+        //   }
+        // }
         alchemy.stats.nodeStats();
         alchemy.stats.edgeStats();
 
@@ -502,7 +553,8 @@ $scope.DeleteHandler=function(category,Id,handle)
   }
     $scope.editor=$scope.createEditor('weaver');
     $scope.config = $scope.initAlchemyConfig(config,'graph');
-    $scope.inViewEdges={}
+    $scope.inViewEdges=[];
+    $scope.inViewNodes=[];
 
     if (!$window.localStorage.username)
     {

@@ -216,6 +216,24 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
     return {
       a: instance,
       api: api,
+      graph : function () 
+      {
+        data=arguments[0];
+        if (data['nodes'].length>0)
+        {
+          this.a.create.nodes(data['nodes']);
+        }
+
+        if (data['edges'].length>0)
+        {
+          this.a.create.edges(data['edges']);
+        }
+        
+        
+
+        
+
+      },
       nodes: function() {
         var a, n, nodeMap, nodeMaps, registerNode, _i, _len;
         nodeMap = arguments[0], nodeMaps = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
@@ -223,8 +241,10 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         registerNode = function(node) {
           var aNode;
           if (!a._nodes[node.id]) {
+
             aNode = new a.models.Node(node);
             a._nodes[node.id] = aNode;
+
             return [aNode];
           } else {
             return console.warn("A node with the id " + node.id + " already exists.\nConsider using the @a.get.nodes() method to \nretrieve the node and then using the Node methods.");
@@ -237,7 +257,6 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         }
         if (this.a.initial) {
           this.a.index = Alchemy.prototype.Index(this.a);
-          // console.log('Attempt2');
           return this.a.updateGraph();
         }
       },
@@ -1346,7 +1365,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
     };
 
     Layout.prototype.friction = function() {
-      console.log('friction is:',this.a.conf.friction);
+      // console.log('friction is:',this.a.conf.friction);
       return this.a.conf.friction;
     };
 
@@ -1378,6 +1397,16 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
     };
 
     Layout.prototype.tick = function(draw) {
+      
+      // if (window.totalTicks==100)
+      // {
+      //   this.a.force.alpha(0);
+      //   window.totalTicks=0;
+      // }
+      // else
+      // {
+      //    window.totalTicks=window.totalTicks+1;
+      // }
       var a, edges, node, nodes, q, _i, _len, _ref;
       a = this.a;
       nodes = a.elements.nodes.svg;
@@ -1451,6 +1480,8 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
       }
       conf = a.conf;
       a.layout = new Layout(a);
+      // console.log('Rendering layout');
+      // console.log(a.elements.nodes.d3);
       return a.force = d3.layout.force().size([conf.graphWidth(), conf.graphHeight()]).theta(1.0).gravity(a.layout.gravity()).friction(a.layout.friction()).nodes(a.elements.nodes.d3).links(a.elements.edges.d3).linkDistance(function(link) {
         return a.layout.linkDistancefn(link);
       }).linkStrength(function(link) {
@@ -1571,6 +1602,9 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
       a.vis = d3.select(conf.divSelector).attr("style", "width:" + (conf.graphWidth()) + "px; height:" + (conf.graphHeight()) + "px; background:" + conf.backgroundColour + ";").append("svg").attr("xmlns", "http://www.w3.org/2000/svg").attr("xlink", "http://www.w3.org/1999/xlink").attr("pointer-events", "all").attr("style", "background:" + conf.backgroundColour + ";").attr("alchInst", Alchemy.prototype.instances.length - 1).on('click', a.interactions.deselectAll).call(dragGroup).on("dblclick.zoom", null).append('g').attr("transform", "translate(" + conf.initialTranslate + ") scale(" + conf.initialScale + ")");
       window.x=0;
       window.y=0;
+      window.nodeColorMap={};
+      window.edgeColorMap={};
+      window.totalTicks=0;
       window.scale=1;
       a.index = Alchemy.prototype.Index(a);
       a.generateLayout();
@@ -1579,9 +1613,13 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
       d3Nodes = a.elements.nodes.d3;
       a.layout.positionRootNodes();
       a.force.start();
-      if (conf.forceLocked) {
-        while (a.force.alpha() > 0.005) {
+      var iter=0;
+      console.log(conf.forceLocked);
+      if (!conf.forceLocked) {
+        while (a.force.alpha() > 0.005 && iter < conf.maxIterStart) {
           a.force.tick();
+          // console.log(iter);
+          iter=iter+1;
         }
       }
       a._drawEdges = a.drawing.DrawEdges;
@@ -1789,9 +1827,12 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
       a.index();
       a.layout.positionRootNodes();
       a.force.start();
-      while (a.force.alpha() > 0.005) {
+      var iter=0
+      while (a.force.alpha() > 0.05 && iter < a.conf.maxIterStart) {
         a.force.tick();
+        iter=iter+1;
       }
+      console.log('Update Called');
       a.force.on("tick", a.layout.tick).start();
       return a.elements.nodes.svg.attr('transform', function(id, i) {
         return "translate(" + id.x + ", " + id.y + ")";
@@ -1958,6 +1999,14 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         edge = this.a._edges[d.id][d.pos];
         styles = this.a.svgStyles.edge.populate(edge);
         nodes = this.a._nodes;
+        
+        
+        if ((d.id+d.pos) in window.edgeColorMap)
+        {
+          
+          styles['stroke']=window.edgeColorMap[d.id+d.pos];
+        }
+        
         if (this.a.conf.cluster) {
           clustering = this.a.layout._clustering;
           styles.stroke = (function(d) {
@@ -2087,8 +2136,9 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         return edges.each(function(edge) {
           var edgeData, g;
           g = d3.select(this);
-          // console.log(utils.edgeStyle(edge));
+
           edgeData = utils.edgeData(edge);
+          edgeData['stroke']='red';
           g.attr('transform', "translate(" + edge.source.x + ", " + edge.source.y + ") rotate(" + (utils.edgeAngle(edge)) + ")");
           return g.select('.edge-line').attr('d', (function() {
             return utils.edgeWalk(edge);
@@ -2209,7 +2259,6 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         var utils;
         utils = this.a.drawing.NodeUtils;
 
-
         return node.selectAll('circle').attr('r', function(d) {
           if (typeof d.radius === "function") {
             return d.radius();
@@ -2217,7 +2266,6 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
             return d.radius;
           }
         }).each(function(d) {
-          // console.log(d3.select(this)[0][0].__data__.fill);
           return d3.select(this).style(d);
         });
       },
@@ -2387,6 +2435,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
           svgStyles["fill"] = fill(d);
           svgStyles["stroke"] = stroke(d);
           svgStyles["stroke-width"] = strokeWidth(d, radius(d));
+
           return svgStyles;
         }
       },
@@ -2957,16 +3006,17 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
     };
 
     EditorUtils.prototype.update = function(node, edge) {
-      if (!this.mouseUpNode) {
-        alchemy.editor.addNode(node);
-        alchemy.editor.addEdge(edge);
-        this.drawEdges.createEdge(alchemy.edge);
-        this.drawNodes.createNode(alchemy.node);
-      } else {
-        alchemy.editor.addEdge(edge);
-        this.drawEdges.createEdge(alchemy.edge);
-      }
-      return alchemy.layout.tick();
+      return;
+      // if (!this.mouseUpNode) {
+      //   alchemy.editor.addNode(node);
+      //   alchemy.editor.addEdge(edge);
+      //   this.drawEdges.createEdge(alchemy.edge);
+      //   this.drawNodes.createNode(alchemy.node);
+      // } else {
+      //   alchemy.editor.addEdge(edge);
+      //   this.drawEdges.createEdge(alchemy.edge);
+      // }
+      // return alchemy.layout.tick();
     };
 
     return EditorUtils;
@@ -3152,7 +3202,10 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         } else {
           this._style[key] = value;
         }
-        this._setD3Properties(this.a.svgStyles.edge.update(this));
+
+        var propsSet=this.a.svgStyles.edge.update(this);
+        // propsSet['stroke']='red';
+        this._setD3Properties(propsSet);
         this.a._drawEdges.updateEdge(this._d3);
         return this;
       };
@@ -3219,11 +3272,13 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         conf = this.a.conf;
         this.id = node.id;
         this._properties = node;
-        this._d3 = _.merge({
+        var x= {
           'id': this.id,
           'root': this._properties[conf.rootNodes],
           'self': this
-        }, this.a.svgStyles.node.populate(this));
+        };
+        var y=this.a.svgStyles.node.populate(this);
+        this._d3 = _.merge(x,y);
         this._nodeType = this._setNodeType();
         this._style = conf.nodeStyle[this._nodeType] ? conf.nodeStyle[this._nodeType] : conf.nodeStyle["all"];
         this._state = "active";
@@ -3318,7 +3373,17 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         } else {
           this._style[key] = value;
         }
-        this._setD3Properties(this.a.svgStyles.node.populate(this));
+        var propsSet=this.a.svgStyles.node.populate(this);
+        // console.log(window.nodeColorMap);
+        if (this.id in window.nodeColorMap)
+        {
+          propsSet['fill']=window.nodeColorMap[this.id];
+        }
+        // if (this.id=='2468807040616286')
+        // {
+          
+        // }
+        this._setD3Properties(propsSet);
         this.a._drawNodes.updateNode(this._d3);
         return this;
       };

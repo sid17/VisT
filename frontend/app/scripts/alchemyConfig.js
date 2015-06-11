@@ -10,7 +10,10 @@ var config = {
   nodeCaption:"",
   edgeCaption:"handle",
   nodeCaptionsOnByDefault:true,
-  rootNodeRadius: 30,
+  rootNodeRadius: 36,
+  maxIterStart:200,
+  maxIterUpdate:200,
+  updateAfterTick:0,
   fixNodes:false,  // nodes cannot be dragged if this is set to true
   fixRootNodes:false,
   graphHeight: function(){ return 380; },
@@ -18,18 +21,18 @@ var config = {
   showControlDash: true,
   nodeStats: true,
   edgeStats: true,
-  friction:0.9,
+  friction:0.5,
   nodeTypes:{type: ["Concept", "Media"]},
   edgeCategory:{type: ["SAME_SYNSET", "HAS_MEDIA","SPATIALLY_DISTRIBUTED_AS"]},
   nodeMouseOver:null,
   captionToggle: true,
   edgesToggle: true,
   nodesToggle: true,
-  nodeOverlap:150,
+  nodeOverlap:50,
   zoomControls: true,
   curvedEdges:false,
   forceLocked : false,
-  alpha : 0,
+  alpha : 0.1,
   showEditor:true,
   removeElement:true,
   search:true,
@@ -42,7 +45,7 @@ var config = {
               "borderColor": "#127DC1",
               "borderWidth": function(d, radius) 
               {
-                  return radius / 4
+                  return radius / 8
               },
               "color": function(d) 
               { 
@@ -51,7 +54,7 @@ var config = {
               "radius": function(d) 
               {
                   if(d.getProperties().root)
-                  return 25; else return 20
+                  return 32; else return 28
               }, 
               "captionColor": "#000000",
               "captionBackground": null,
