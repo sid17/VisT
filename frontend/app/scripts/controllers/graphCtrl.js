@@ -1,8 +1,67 @@
 'use strict';
 
 angular.module('visualisationTool')
-  .controller('graphCtrl', ['$scope', '$http','$rootScope', '$window','AuthService','$location','ngNotify',function ($scope, $http,$rootScope,$window,AuthService,$location,ngNotify) {
+  .controller('graphCtrl', ['$scope', '$http','$rootScope', '$window','AuthService','$location','ngNotify','$log',function ($scope, $http,$rootScope,$window,AuthService,$location,ngNotify,$log) {
     
+
+$scope.myInterval = 5000;
+  var slides = $scope.slides = [];
+  $scope.addSlide = function() {
+    var newWidth = 600 + slides.length + 1;
+    slides.push({
+      image: 'http://placekitten.com/' + newWidth + '/300',
+      text: ['More','Extra','Lots of','Surplus'][slides.length % 4] + ' ' +
+        ['Cats', 'Kittys', 'Felines', 'Cutes'][slides.length % 4]
+    });
+  };
+  for (var i=0; i<4; i++) {
+    $scope.addSlide();
+  }
+
+
+
+$scope.dropVal='phone';
+$scope.dropValLimit='10';
+
+$scope.items = [
+    'watching',
+    'human',
+    'standing_human',
+    'sitting_human',
+    'phone',
+    'ceiling',
+    'pen'
+  ];
+
+  $scope.status = {
+    isopen: false
+  };
+
+  $scope.toggled = function(open) {
+
+    // $log.log('Dropdown is now: ', open);
+  };
+
+  $scope.toggleDropdown = function($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    $scope.status.isopen = !$scope.status.isopen;
+  };
+
+  $scope.searchBrain=function()
+  {
+    $scope.queryGraph();
+  }
+  $scope.record=function(val)
+  {
+   $scope.dropVal=val;
+  }
+
+
+
+
+
+
     $rootScope.logout = function () {
       // console.log('Logout Called');
       AuthService.logout().then(
@@ -280,6 +339,7 @@ $scope.DeleteHandler=function(category,Id,handle)
     {
       var edges=[];
       var nodes=[];
+      console.log(data);
       for (var i=0;i<data['edges'].length;i++)
       {
         if ($scope.inViewEdges.indexOf(data['edges'][i]['handle']) < 0)
@@ -311,20 +371,13 @@ $scope.DeleteHandler=function(category,Id,handle)
       $scope.inViewEdges=[];
       $scope.inViewNodes=[];
       var weaverGraphEndpoint = $scope.config.graphEndPoint;
-        // $scope.config.friction=0.9;
-        var retVal=$scope.editor.getValue();
-        // console.log(retVal);
-        var r1=retVal.split(',');
-        var query=r1[0].split(':')[1];
-        var direction=r1[1].split(':')[1]
-        var number=r1[2].split(':')[1];
-        // console.log(query,number,direction);
+        
         $.getJSON(weaverGraphEndpoint, 
           {
-              query: query,
-              number: number,
+              query: $scope.dropVal,
+              number: $scope.dropValLimit,
               overwrite:'1',
-              directionVal: direction
+              directionVal: 'U'
           }, 
           function(data) 
           {
@@ -351,13 +404,22 @@ $scope.DeleteHandler=function(category,Id,handle)
     config.divSelector="#"+graphId;
     config.edgeTypes = "caption";
     alchemy = new Alchemy(config);
-    ngNotify.set('The current system is in alpha, Use it carefully! ', {
-    type: 'warn',
+
+// document.getElementById('test')
+
+    var str='<div style="height:100%"><b style="font-size:1.5em">Search Brain</b> <br><img src="images/s1.png" height=150 width=400/><br> <b style="font-size:1.5em">Hover over Nodes to view properties</b> <br><img src="images/s2.png" height=150 width=400/><br><b style="font-size:1.5em">Expand the side menu to edit properties</b> <br><img src="images/s3.png" height=150 width=400/> </div>';
+    ngNotify.set(str, {
+    theme: 'pastel',
+    type: 'success',
     position:'top',
+    sticky: true,
+    html: true,
     duration: 500
     });
     return config;
   };
+
+
 
 
 
@@ -488,20 +550,13 @@ $scope.DeleteHandler=function(category,Id,handle)
   $scope.addMoreNodes=function(input)
   {
     var weaverGraphEndpoint = $scope.config.graphEndPoint;
-    
-    var retVal=$scope.editor.getValue();
-    var r1=retVal.split(',');
-    var query=r1[0].split(':')[1];
-    var number=r1[2].split(':')[1]
-    var direction=r1[1].split(':')[1];
-
 
     $.getJSON(weaverGraphEndpoint, 
       {
           query: input,
-          number: number,
+          number: $scope.dropValLimit,
           overwrite:'0',
-          directionVal:direction
+          directionVal:'U'
       },function(data) 
       {
         data=$scope.removeDuplicates(data);
@@ -551,14 +606,14 @@ $scope.DeleteHandler=function(category,Id,handle)
 
       });
   }
-    $scope.editor=$scope.createEditor('weaver');
+    
     $scope.config = $scope.initAlchemyConfig(config,'graph');
     $scope.inViewEdges=[];
     $scope.inViewNodes=[];
 
     if (!$window.localStorage.username)
     {
-      $rootScope.username='Mr. X'
+      $rootScope.username=''
       $rootScope.loggedIn=false
     }
     else

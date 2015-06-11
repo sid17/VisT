@@ -87,7 +87,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="styleNodeLabel">Node Style Interface</h4>
+        <h4 class="modal-title" id="styleNodeLabel">Highlight Nodes/Edges</h4>
       </div>
       <div class="modal-body">
        
@@ -95,8 +95,7 @@
   <div class="form-group">
 
 
-
-<h2>Full Example</h2>
+Select Color:
 <input type='text' id="full"/>
 
 <script src="scripts/colorpallet.js"></script>
@@ -132,15 +131,76 @@
             <div class="row row-no-padding">
                 <div class="col-xs-11">
                     <div id="graphcontain">
-                      <textarea name="weaver" id="weaver" rows="4" cols="120" data-lang="cypher" class="code form-control">search:phone,direction:U,limit:10
-                       </textarea>
+
+
+
+
+<script>
+
+$('.dropdown-menu input').click(function (e) {
+     e.stopPropagation();
+ });
+
+
+
+
+</script>
+
+
+
+
+
+<div class="row">
+  <div class="col-md-2">
+  </div>
+  <div class="col-md-8">
+
+
+
+
+<form class="form-inline">
+  <div class="form-group">
+    <label for="exampleInputName2">Concept Name</label>
+
+<span class="dropdown" dropdown on-toggle="toggled(open)">
+   <input type="text" class="form-control" placeholder="Search Here" ng-model="dropVal" disabled>
+    <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle><i class="glyphicon glyphicon-search" ></i></button>
+      <ul class="dropdown-menu">
+        <input class="form-control" placeholder="Search" ng-model='dropVal'>
+        <li ng-repeat="choice in items">
+          <a href ng-click='record(choice)'>{{choice}}</a>
+        </li>
+        
+      </ul>
+</span>
+
+  </div>
+  <div class="form-group">
+    <label >Limit</label>
+    <input class="form-control" placeholder="Enter Limit" ng-model="dropValLimit">
+  </div>
+  <button class="btn btn-primary" id='testNode' ng-click="searchBrain()"> <i class="glyphicon glyphicon-play" ></i>Search Graph</button>
+</form>
+
+
+
+</div></div>
+
+
+
+
+
+
+
+                      <!-- <textarea name="weaver" id="weaver" rows="4" cols="120" data-lang="cypher" class="code form-control">search:phone,direction:U,limit:10
+                       </textarea> -->
   <!-- <button ng-click="queryGraph()">Exec</button> -->
   <!-- <i class="fa fa-play-circle-o"></i> -->
                     </div>
                 </div>
                 <div class="col-xs-1 nopadding" >
 
-    <button class="btn btn-primary pull-right" id='testNode' ng-click="queryGraph()"> <i class="glyphicon glyphicon-play" ></i>Run Query</button>
+    
                 </div>
             </div>
             <div class="panel panel-primary">
@@ -169,6 +229,8 @@
                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModalNode" id="nodeModalButton">Add Node</button>
 
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModalEdge" id="edgeModalButton">Add Edge</button>
+
+                    <span class='pull-right'><a href="http://weaver.systems/">Powered By Weaver</a></span>
                 </div>
             </div>
         </div>

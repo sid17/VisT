@@ -7,7 +7,8 @@ var app = angular.module('visualisationTool', [
   'ngResource',
   'ngSanitize',
   'ngRoute',
-  'ngNotify'
+  'ngNotify',
+  'ui.bootstrap'
 ]);
 
 app.config(function ($routeProvider, $httpProvider) {

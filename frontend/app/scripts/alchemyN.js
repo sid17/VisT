@@ -757,7 +757,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
           }
           divSelector = a.conf.divSelector;
           a.dash = d3.select("" + divSelector).append("div").attr("id", "control-dash-wrapper").attr("class", "col-md-4 initial");
-          a.dash.append("i").attr("id", "dash-toggle").attr("class", "fa fa-flask col-md-offset-12");
+          a.dash.append("i").attr("id", "dash-toggle").attr("class", "fa fa-search-plus col-md-offset-12");
           a.dash.append("div").attr("id", "control-dash").attr("class", "col-md-12");
           a.dash.select('#dash-toggle').on('click', a.interactions.toggleControlDash);
           
