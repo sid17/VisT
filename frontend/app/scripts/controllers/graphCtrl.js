@@ -356,9 +356,9 @@ $scope.DeleteHandler=function(category,Id,handle)
 
       for (var i=0;i<data['nodes'].length;i++)
       {
-        if ($scope.inViewNodes.indexOf(data['nodes'][i]['handle'][0]) < 0)
+        if ($scope.inViewNodes.indexOf(data['nodes'][i]['handle']) < 0)
         {
-          $scope.inViewNodes.push(data['nodes'][i]['handle'][0])
+          $scope.inViewNodes.push(data['nodes'][i]['handle'])
           nodes.push(data['nodes'][i]);
         }
       }
@@ -386,7 +386,7 @@ $scope.DeleteHandler=function(category,Id,handle)
           }, 
           function(data) 
           {
-            console.log('data');
+              console.log(data);
               data=$scope.removeDuplicates(data)
               var config=$scope.config;
               config.dataSource=data;
@@ -414,15 +414,15 @@ $scope.DeleteHandler=function(category,Id,handle)
 
 // document.getElementById('test')
 
-    var str='<div style="height:100%"><b style="font-size:1.5em">Search Brain</b> <br><img src="images/s1.png" height=150 width=400/><br> <b style="font-size:1.5em">Hover over Nodes to view properties</b> <br><img src="images/s2.png" height=150 width=400/><br><b style="font-size:1.5em">Expand the side menu to edit properties</b> <br><img src="images/s3.png" height=150 width=400/> </div>';
-    ngNotify.set(str, {
-    theme: 'pastel',
-    type: 'success',
-    position:'top',
-    sticky: true,
-    html: true,
-    duration: 500
-    });
+    // var str='<div style="height:100%"><b style="font-size:1.5em">Search Brain</b> <br><img src="images/s1.png" height=150 width=400/><br> <b style="font-size:1.5em">Hover over Nodes to view properties</b> <br><img src="images/s2.png" height=150 width=400/><br><b style="font-size:1.5em">Expand the side menu to edit properties</b> <br><img src="images/s3.png" height=150 width=400/> </div>';
+    // ngNotify.set(str, {
+    // theme: 'pastel',
+    // type: 'success',
+    // position:'top',
+    // sticky: true,
+    // html: true,
+    // duration: 500
+    // });
     return config;
   };
 

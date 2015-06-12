@@ -2,7 +2,7 @@ var config = {
   popOverTextElements:['handle','labels'],
   popOverImgElements:['mediapath'],
   imgPrependURL:'http://d1rygkc2z32bg1.cloudfront.net/',
-  graphEndPoint:'http://127.0.0.1:5000/graph/getNode/',
+  graphEndPoint:'http://52.25.65.189:6363/graph/getNode/',
   logInEndPoint:'http://127.0.0.1:5000/api/',
   editGraphPropsEdge:["source","target", "handle","id"],
   editGraphPropsNode:["handle","mediapath", "labels","id"],
