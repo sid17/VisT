@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('visualisationTool')
-  .controller('graphCtrl', ['$scope', '$http','$rootScope', '$window','AuthService','$location','ngNotify','$log',function ($scope, $http,$rootScope,$window,AuthService,$location,ngNotify,$log) {
+  .controller('graphCtrl', ['$scope', '$http','$rootScope', '$window','AuthService','$location','ngNotify','$log','$compile',function ($scope, $http,$rootScope,$window,AuthService,$location,ngNotify,$log,$compile) {
     
 
 $scope.myInterval = 5000;
@@ -281,6 +281,8 @@ $scope.EditPropertyHandler = function(category,Id,handle)
 
 $scope.DeleteHandler=function(category,Id,handle)
 {
+  
+  n.self.remove();
   var iden="";
     var x=document.getElementById('editForm').childNodes;
     for (var i=0;i<x.length;i++)
@@ -295,26 +297,26 @@ $scope.DeleteHandler=function(category,Id,handle)
       }
     }
     var elementProps;
-      if (category=='node')
-      {
-        node = alchemy.get.nodes(iden);
-        node.remove()
-      }
-      else
-      {
-        var element;
-        for (var i=0;i<alchemy._edges[Id].length;i++)
-        {
+      // if (category=='node')
+      // {
+      //   node = alchemy.get.nodes(iden);
+      //   node.remove()
+      // }
+      // else
+      // {
+      //   var element;
+      //   for (var i=0;i<alchemy._edges[Id].length;i++)
+      //   {
           
-          if (alchemy._edges[Id][i]._properties['handle']==handle)
-          {
-            element=alchemy._edges[Id][i];
-            break;
-          }
-        }
-        element.remove();
+      //     if (alchemy._edges[Id][i]._properties['handle']==handle)
+      //     {
+      //       element=alchemy._edges[Id][i];
+      //       break;
+      //     }
+      //   }
+      //   element.remove();
         
-      }
+      // }
       var query={}
       query['type']='Delete';
       query['category']='edge';
@@ -408,6 +410,7 @@ $scope.DeleteHandler=function(category,Id,handle)
     config.divSelector="#"+graphId;
     config.edgeTypes = "caption";
     alchemy = new Alchemy(config);
+    $scope.alchemy=alchemy
 
 // document.getElementById('test')
 
@@ -427,13 +430,14 @@ $scope.DeleteHandler=function(category,Id,handle)
 
 
 
-  $scope.addKeyValNode=function()
+  $scope.addKeyValNode=function(val)
   {
-    var text='<div class="form-group"><div class="col-xs-6"><input  data-identity="added" class="form-control keyVal Added" placeholder="Key"> </div><div class="col-xs-6"><input  data-identity="added" class="form-control keyVal Added" placeholder="Value"></div></div>';
-    var d = document.createElement('div');
-    d.innerHTML = text;
-    var element=d.firstChild;
-    document.getElementById('modalFormNode').appendChild(element); 
+    $scope.editElementProperties[val]="";
+    // var text='<div class="form-group"><div class="col-xs-6"><input  data-identity="added" class="form-control keyVal Added" placeholder="Key"> </div><div class="col-xs-6"><input  data-identity="added" class="form-control keyVal Added" placeholder="Value"></div></div>';
+    // var d = document.createElement('div');
+    // d.innerHTML = text;
+    // var element=d.firstChild;
+    // document.getElementById('modalFormNode').appendChild(element); 
   
   };
 
@@ -584,7 +588,117 @@ $scope.DeleteHandler=function(category,Id,handle)
     
   };
 
+$scope.editProperties=function(element)
+{
+  console.log(element);
+  $('#myModalNode').modal('show');
+}
 
+$scope.deleteProperty=function(key)
+{
+  
+  key=key.substring(key.indexOf('!@')+2,key.length);
+  console.log(key);
+  delete $scope.editElementProperties[key];
+  $scope.refreshContent();
+
+}
+
+$scope.SaveProperties=function()
+{
+  $scope.editElement.self._properties=jQuery.extend(true, {}, $scope.editElementProperties);
+  if ($scope.editElementType=='node')
+    {
+     var img="";
+     var dict=$scope.editElementProperties;
+     for (var key in dict)
+     {
+        if ($scope.config.popOverImgElements.indexOf(key) > -1)
+        {
+          var url=$scope.config.imgPrependURL+dict[key];
+          img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
+          console.log(url);
+        }
+        else if ($scope.config.popOverTextElements.indexOf(key) > -1)
+        {
+          img=img+key+" : "+dict[key]+"<br>";
+        }
+     }
+      $(document.getElementById('node-'+$scope.editElementProperties['id'])).data('bs.popover').options.content=img;
+    }
+    var query={}
+    query['type']='update';
+    query['category']=$scope.editElementType;
+    query['props']=$scope.editElementProperties;
+    $rootScope.writeToLog(query);
+}
+
+$scope.deleteEdges=function(element)
+{
+  
+  element.self.remove()
+}
+
+$scope.PropertyModify=function(element,type)
+{
+  console.log(element.self._properties);
+  $scope.editElementProperties=jQuery.extend(true, {}, element.self._properties);
+  $scope.editElement=element;
+  $scope.editElementType=type;
+  $scope.refreshContent()
+
+
+}
+
+
+
+$scope.refreshContent=function()
+{
+
+var str="";
+for (var key in $scope.editElementProperties)
+{
+  console.log(key,$scope.editElementProperties[key]);
+   str=str+"<div class='form-group'><div class='col-xs-5'> \
+      <input  class='form-control keyVal' value='"+key+"' disabled> \
+    </div> \
+    <div class='col-xs-5'> \
+      <input  class='form-control keyVal' onchange='alert(\" hello world \");'  value='"+$scope.editElementProperties[key]+"'>  \
+    </div> \
+    <div class='col-xs-2'> \
+      <i class='glyphicon glyphicon-trash' style='cursor:pointer' id='deleteProperty!@"+key+"'></i> \
+    </div> \
+    </div>";
+    
+    
+
+  // $scope.editElementProperties.$apply();
+}
+str=str+"<button type='submit'  class='btn btn-primary'>Save changes</button>";
+// var elmnt = $compile(str)($scope);
+// console.log(elmnt);
+document.getElementById('modalFormNode').innerHTML=str;
+// $(document.getElementById('modalFormNode')).append()str;
+
+for (var key in $scope.editElementProperties)
+{
+  var id="deleteProperty!@"+key;
+  console.log(id);
+document.getElementById(id).onclick = function() 
+    { 
+    (angular.element(document.getElementById('graphcontain').parentNode)).scope().deleteProperty(this.id);
+    };
+}
+
+}
+$scope.isVisible=function(key,type)
+{
+  if (type=='node' && $scope.config.editGraphPropsNode.indexOf(key) > -1)
+    return true;
+  else if (type=='edge' && $scope.config.editGraphPropsEdge.indexOf(key) > -1)
+    return true;
+  else return false;
+}
 
  
   $scope.addKeyValEdge=function()
@@ -659,6 +773,12 @@ $scope.DeleteHandler=function(category,Id,handle)
     $scope.config = $scope.initAlchemyConfig(config,'graph');
     $scope.inViewEdges=[];
     $scope.inViewNodes=[];
+    $rootScope.items123 = {'adam':10, 'amalie':12};
+    $scope.editElementProperties={};
+    $scope.editElementProperties['caption']='acb';
+    $scope.editElementType='node';
+    $scope.alchemy={};
+
 
     if (!$window.localStorage.username)
     {

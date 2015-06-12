@@ -9,22 +9,25 @@
         <h4 class="modal-title" id="myModalNodeLabel">Node Add Interface</h4>
       </div>
       <div class="modal-body">
-       
-  <form id="modalFormNode">
-  <div class="form-group">
-    <div class="col-xs-6">
-      <input  class="form-control keyVal" value="handle" disabled>
-    </div>
-    <div class="col-xs-6">
-      <input  class="form-control keyVal" placeholder="Value"required>
-    </div>
-    </div>
+
+<form ng-submit="addKeyValNode(keyValPairHandle)">
+<!-- <input ng-model="keyValPairHandle" required></input> -->
+<button type="submit" class="btn btn-default" >Add Key Value Pair</button>
 </form>
-<button class="btn btn-default" ng-click="addKeyValNode()">Add Key Value Pair</button>
+
+
+  <form id="modalFormNode" ng-submit="SaveProperties()">
+    
+
+
+
+
+</form>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" ng-click="AddNodes()">Save changes</button>
+        
       </div>
     </div>
   </div>
@@ -193,6 +196,8 @@ Select Color:
 </div>
 
 
+<div> <button class='btn btn-default' ng-click='editProperties(editElement)'> Edit Properties </button>
+<div ng-if="editElementType=='edge'" ng-click='deleteEdges(editElement)' > <button class='btn btn-default'> Delete Edge </button>
 
 <script src="scripts/d3/d3.js"></script>
 <script src="scripts/lodash/distA/lodash.compat.js"></script>

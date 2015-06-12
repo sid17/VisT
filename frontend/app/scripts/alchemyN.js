@@ -1,5 +1,8 @@
 function WeaverNodeEditor(n,propsArray,category,Id,handle)
 {
+
+  // (angular.element(document.getElementById('graphcontain').parentNode)).scope().PropertyModify(n,category);
+
   str="<form class='form-inline' id='editForm'><br>";
   dict=n.self._properties;
   for (var key in dict)
@@ -38,9 +41,15 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
   {
     document.getElementById('DeleteProps').onclick = function() 
   { 
-     (angular.element(document.getElementById('graphcontain').parentNode)).scope().DeleteHandler(category,Id,handle);
+     (angular.element(document.getElementById('graphcontain').parentNode)).scope().DeleteHandler(n);
   };
   }
+}
+
+function WeaverEditor(n,type)
+{
+(angular.element(document.getElementById('graphcontain').parentNode)).scope().PropertyModify(n,type);
+
 }
 
 (function() {
@@ -1080,13 +1089,17 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
     return {
       edgeClick: function(d) {
         var propsArray = a.conf.editGraphPropsEdge;
-        // console.log('Edge Clicked is:',d);
-        WeaverNodeEditor(d,propsArray,'edge',d.id,d.self._properties['handle']);
+        console.log(d3.event);
+        
         var edge;
+        
         if (d3.event.defaultPrevented) {
           return;
         }
-        // d3.event.stopPropagation();
+        window.eventVal=d3.event;
+        d3.event.stopPropagation();
+        WeaverNodeEditor(d,propsArray,'edge',d.id,d.self._properties['handle']);
+        d3.event=window.eventVal;
         edge = d.self;
         if (typeof a.conf.edgeClick === 'function') {
           a.conf.edgeClick(edge);
@@ -1094,7 +1107,8 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
         if (edge._state !== "hidden") {
           edge._state = edge._state === "highlighted" ? "selected" : "active";
           return edge.setStyles();
-        }
+        }console.log('EdgeClick')
+  
       },
       edgeMouseOver: function(d) {
         var edge;
@@ -1151,6 +1165,7 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
 
         var propsArray = a.conf.editGraphPropsNode;
         WeaverNodeEditor(n,propsArray,'node',0,"");
+        // WeaverEditor(n,'node');
         var node;
         if (d3.event.defaultPrevented) {
           return;

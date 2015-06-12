@@ -30,7 +30,7 @@ var config = {
   nodesToggle: true,
   nodeOverlap:50,
   zoomControls: true,
-  curvedEdges:true,
+  curvedEdges:false,
   forceLocked : false,
   alpha : 0.1,
   showEditor:true,
