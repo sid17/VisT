@@ -16,7 +16,7 @@ var config = {
   updateAfterTick:0,
   fixNodes:false,  // nodes cannot be dragged if this is set to true
   fixRootNodes:false,
-  graphHeight: function(){ return 380; },
+  graphHeight: function(){ return 440; },
   // graphWidth: function(){ return window.innerWidth },
   showControlDash: true,
   nodeStats: true,

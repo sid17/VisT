@@ -42,25 +42,6 @@
 
 
 
-      <div class="btn-group" dropdown dropdown-append-to-body >
-      <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle>
-        Dropdown on Body <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu" role="menu" style="z-index: 100000000;">
-        <li> <a ng-click="changeView('queryGraph')" style="cursor:pointer"> QueryGraph </a></li>
-
-        <li><a ng-click="changeView('addNode')" style="cursor:pointer"> AddNode </a></li>
-        <li> <a ng-click="changeView('addEdge')" style="cursor:pointer"> AddEdge </a></li>
-        <li class="divider"></li>
-        <li><a href="#configure"  > Configure </a> </li>
-      </ul>
-    </div>
-
-
-
-
-
-
 
 
 
@@ -70,7 +51,27 @@
                 </li>
 
                 <li >
-                    
+<a style="margin-top:-17px;cursor:pointer">
+             <div dropdown dropdown-append-to-body >
+      <span  dropdown-toggle>
+        Play with Graph <span class="caret"></span>
+      </span>
+      <ul class="dropdown-menu" role="menu" style="z-index: 100000000;" >
+        <li>
+            .
+        </li>
+        <li> <a ng-click="changeView('queryGraph')" style="cursor:pointer"> QueryGraph </a></li>
+
+        <li><a ng-click="changeView('addNode')" style="cursor:pointer"> AddNode </a></li>
+        <li> <a ng-click="changeView('addEdge')" style="cursor:pointer"> AddEdge </a></li>
+        <li class="divider"></li>
+        <!-- <li><a href="#configure"  > Configure </a> </li> -->
+      </ul>
+    </div>
+</a>
+
+
+
                 </li>
 
                 <li >

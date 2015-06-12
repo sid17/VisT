@@ -282,7 +282,7 @@ $scope.EditPropertyHandler = function(category,Id,handle)
 $scope.DeleteHandler=function(category,Id,handle)
 {
   
-  n.self.remove();
+  
   var iden="";
     var x=document.getElementById('editForm').childNodes;
     for (var i=0;i<x.length;i++)
@@ -296,34 +296,34 @@ $scope.DeleteHandler=function(category,Id,handle)
       x[i].childNodes[2].disabled = true;
       }
     }
-    var elementProps;
-      // if (category=='node')
-      // {
-      //   node = alchemy.get.nodes(iden);
-      //   node.remove()
-      // }
-      // else
-      // {
-      //   var element;
-      //   for (var i=0;i<alchemy._edges[Id].length;i++)
-      //   {
+    // var elementProps;
+    //   if (category=='node')
+    //   {
+    //     node = alchemy.get.nodes(iden);
+    //     node.remove()
+    //   }
+    //   else
+    //   {
+    //     var element;
+    //     for (var i=0;i<alchemy._edges[Id].length;i++)
+    //     {
           
-      //     if (alchemy._edges[Id][i]._properties['handle']==handle)
-      //     {
-      //       element=alchemy._edges[Id][i];
-      //       break;
-      //     }
-      //   }
-      //   element.remove();
+    //       if (alchemy._edges[Id][i]._properties['handle']==handle)
+    //       {
+    //         element=alchemy._edges[Id][i];
+    //         break;
+    //       }
+    //     }
+    //     element.remove();
         
-      // }
-      var query={}
-      query['type']='Delete';
-      query['category']='edge';
-      query['props']=elementProps;
+    //   }
+    //   var query={}
+    //   query['type']='Delete';
+    //   query['category']='edge';
+    //   query['props']=elementProps;
 
-      $rootScope.writeToLog(query);
-      document.getElementById('insertStuff').innerHTML="";
+    //   $rootScope.writeToLog(query);
+    //   document.getElementById('insertStuff').innerHTML="";
 };
 
     $scope.createEditor = function (sourceId) 
@@ -414,15 +414,15 @@ $scope.DeleteHandler=function(category,Id,handle)
 
 // document.getElementById('test')
 
-    // var str='<div style="height:100%"><b style="font-size:1.5em">Search Brain</b> <br><img src="images/s1.png" height=150 width=400/><br> <b style="font-size:1.5em">Hover over Nodes to view properties</b> <br><img src="images/s2.png" height=150 width=400/><br><b style="font-size:1.5em">Expand the side menu to edit properties</b> <br><img src="images/s3.png" height=150 width=400/> </div>';
-    // ngNotify.set(str, {
-    // theme: 'pastel',
-    // type: 'success',
-    // position:'top',
-    // sticky: true,
-    // html: true,
-    // duration: 500
-    // });
+    var str='<div style="height:100%"><b style="font-size:1.5em">Search Brain</b> <br><img src="images/s1.png" height=150 width=400/><br> <b style="font-size:1.5em">Hover over Nodes to view properties</b> <br><img src="images/s2.png" height=150 width=400/><br><b style="font-size:1.5em">Expand the side menu to edit properties</b> <br><img src="images/s3.png" height=150 width=400/> </div>';
+    ngNotify.set(str, {
+    theme: 'pastel',
+    type: 'success',
+    position:'top',
+    sticky: true,
+    html: true,
+    duration: 500
+    });
     return config;
   };
 
