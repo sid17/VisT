@@ -50,7 +50,9 @@ $scope.items = [
 
   $scope.searchBrain=function()
   {
+    console.log('searching');
     $scope.queryGraph();
+
   }
   $scope.record=function(val)
   {
@@ -366,6 +368,7 @@ $scope.DeleteHandler=function(category,Id,handle)
     };
     $scope.queryGraph=function()
     {
+      console.log('query');
       var childNode=document.getElementById('graph').childNodes[0];
       childNode.parentNode.removeChild(childNode);
       $scope.inViewEdges=[];
@@ -381,6 +384,7 @@ $scope.DeleteHandler=function(category,Id,handle)
           }, 
           function(data) 
           {
+            console.log('data');
               data=$scope.removeDuplicates(data)
               var config=$scope.config;
               config.dataSource=data;
@@ -407,15 +411,15 @@ $scope.DeleteHandler=function(category,Id,handle)
 
 // document.getElementById('test')
 
-    var str='<div style="height:100%"><b style="font-size:1.5em">Search Brain</b> <br><img src="images/s1.png" height=150 width=400/><br> <b style="font-size:1.5em">Hover over Nodes to view properties</b> <br><img src="images/s2.png" height=150 width=400/><br><b style="font-size:1.5em">Expand the side menu to edit properties</b> <br><img src="images/s3.png" height=150 width=400/> </div>';
-    ngNotify.set(str, {
-    theme: 'pastel',
-    type: 'success',
-    position:'top',
-    sticky: true,
-    html: true,
-    duration: 500
-    });
+    // var str='<div style="height:100%"><b style="font-size:1.5em">Search Brain</b> <br><img src="images/s1.png" height=150 width=400/><br> <b style="font-size:1.5em">Hover over Nodes to view properties</b> <br><img src="images/s2.png" height=150 width=400/><br><b style="font-size:1.5em">Expand the side menu to edit properties</b> <br><img src="images/s3.png" height=150 width=400/> </div>';
+    // ngNotify.set(str, {
+    // theme: 'pastel',
+    // type: 'success',
+    // position:'top',
+    // sticky: true,
+    // html: true,
+    // duration: 500
+    // });
     return config;
   };
 
@@ -537,6 +541,51 @@ $scope.DeleteHandler=function(category,Id,handle)
     $rootScope.writeToLog(query)
 
   };
+
+
+  $scope.CreateNode=function(node)
+  {
+    console.log(node.src);
+    var jsonObj = {};
+    jsonObj['handle']=node.src;
+
+    jsonObj['id']=$scope.hashFn(jsonObj['handle']);
+    var nodeObj=JSON.parse(JSON.stringify(jsonObj));
+    alchemy.create.nodes(nodeObj);
+    $scope.addPopOver(jsonObj);
+
+    var query={};
+    query['type']='create'
+    query['category']='node'
+    query['props']=jsonObj
+    $rootScope.writeToLog(query)
+
+  };
+
+  $scope.CreateEdge=function(edge)
+  {
+    console.log(edge.src);
+    console.log(edge.dst);
+    var jsonObj = {};
+    jsonObj['source']=edge.src;
+    jsonObj['target']=edge.dst
+    
+    var edge=JSON.parse(JSON.stringify(jsonObj));
+    alchemy.create.edges(edge);
+    
+    var query={};
+    query['type']='create'
+    query['category']='edge'
+    query['props']=jsonObj
+    $rootScope.writeToLog(query)
+
+
+
+    
+  };
+
+
+
  
   $scope.addKeyValEdge=function()
   {

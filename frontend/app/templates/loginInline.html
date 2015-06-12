@@ -1,0 +1,23 @@
+
+<div class="row">
+	<div class="col-md-3"> <p class="text-danger" ng-show="loginError">{{ loginError }}</p> </div>
+<div ng-controller="AuthCtrl" class="col-md-8">
+<form ngcloak ng-if="!user" class="form-inline"  ng-submit='login(user)'>
+  
+<div class="form-group">
+    <label >Email</label>
+      <input type="email" class="form-control" ng-model="user.email" placeholder="Email address" required="" id='logInEmail' autofocus="">
+ </div>
+
+ <div class="form-group">
+    <label >Password</label>
+      <input type="password" id='logInPassword' class="form-control" ng-model="user.password" placeholder="Password" required="">
+ </div>
+
+  <button type="submit" class="btn btn-primary">Sign In</button>
+
+</form>
+
+</div>
+<div class="col-md-2"></div>
+</div>

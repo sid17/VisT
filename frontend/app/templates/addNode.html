@@ -1,0 +1,37 @@
+<!--  <div class="row">
+	<div class="col-md-2"></div>
+<div class="col-md-8">
+<form id="modalFormNode" class="form-inline">
+  <div class="form-group">
+    <div class="col-xs-6">
+      <input  class="form-control keyVal" value="handle" disabled>
+    </div>
+    <div class="col-xs-6">
+      <input  class="form-control keyVal" placeholder="Value"required>
+    </div>
+   </div>
+<button type="button" class="btn btn-primary" ng-click="AddNodes()">Save changes</button>
+</form>
+</div>
+<div class="col-md-2"></div>
+</div> -->
+
+
+
+<div class="row">
+	<div class="col-md-3"></div>
+<div class="col-md-6">
+<form class="form-inline"  ng-submit='CreateNode(node)'>
+  
+<div class="form-group">
+    <label >Handle Name</label>
+    <input class="form-control" ng-model="node.src" placeholder="Node" required="" autofocus="">
+ </div>
+
+  <button type="submit" class="btn btn-primary">Create Node</button>
+
+</form>
+
+</div>
+<div class="col-md-3"></div>
+</div>

@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('AuthService', function ($http,$window, $q, API_SERVER,$rootScope) {
+app.factory('AuthService', function ($http,$window, $q, API_SERVER,$rootScope,ngNotify) {
 
   var authenticate = function (username, password, endpoint) {
     var url = API_SERVER + endpoint;
@@ -38,8 +38,9 @@ app.factory('AuthService', function ($http,$window, $q, API_SERVER,$rootScope) {
       function () {
         $window.localStorage.removeItem('token');
         $window.localStorage.removeItem('username');
-        $rootScope.username='Mr.X'
+        $rootScope.username=''
         $rootScope.loggedIn=false
+         ngNotify.set('You are successfully logged out',{type:'success',position: 'top'});
 
         deferred.resolve();
       },

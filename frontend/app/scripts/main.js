@@ -8,7 +8,8 @@ var app = angular.module('visualisationTool', [
   'ngSanitize',
   'ngRoute',
   'ngNotify',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'ngAnimate'
 ]);
 
 app.config(function ($routeProvider, $httpProvider) {
@@ -18,17 +19,9 @@ app.config(function ($routeProvider, $httpProvider) {
       templateUrl: 'templates/graph.html',
       controller: 'graphCtrl'
     })
-    .when('/login', {
-      templateUrl: 'templates/login.html',
-      controller: 'AuthCtrl'
-    })
-    .when('/register', {
-      templateUrl: 'templates/createuser.html',
-      controller: 'AuthCtrl'
-    })
-    .when('/logout', {
-      templateUrl: 'templates/logout.html',
-      controller: 'AuthCtrl'
+    .when('/configure', {
+      templateUrl: 'templates/config.html',
+      controller: 'ConfigCtrl'
     })
     .otherwise({
       redirectTo: '/'
