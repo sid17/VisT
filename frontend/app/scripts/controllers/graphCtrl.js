@@ -50,13 +50,14 @@ $scope.items = [
 
   $scope.searchBrain=function()
   {
-    console.log('searching');
+    // console.log('searching');
     $scope.queryGraph();
 
   }
   $scope.record=function(val)
   {
-   $scope.dropVal=val;
+   // $scope.dropVal=val;
+   document.getElementById('dropVal').value=val;
   }
 
 
@@ -101,7 +102,7 @@ $scope.styleNodeEdge =function()
       }
       
     }
-    console.log($window.nodeColorMap);
+    // console.log($window.nodeColorMap);
   }
   else
   {
@@ -114,7 +115,7 @@ $scope.styleNodeEdge =function()
         if (edge._properties['type']==y)
         {
           // console.log('TRUE');
-          console.log(edge);
+          // console.log(edge);
           // edge._style['stroke']='black';
           // edge._style['color']='black';
           // console.log(edge._style)
@@ -124,7 +125,7 @@ $scope.styleNodeEdge =function()
 
         }
       }
-      console.log($window.edgeColorMap);
+      // console.log($window.edgeColorMap);
     }    
   }
 
@@ -261,7 +262,7 @@ $scope.EditPropertyHandler = function(category,Id,handle)
         {
           var url=$scope.config.imgPrependURL+dict[key];
           img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
-          console.log(url);
+          // console.log(url);
         }
         else if ($scope.config.popOverTextElements.indexOf(key) > -1)
         {
@@ -343,7 +344,7 @@ $scope.DeleteHandler=function(category,Id,handle)
     {
       var edges=[];
       var nodes=[];
-      console.log(data);
+      // console.log(data);
       for (var i=0;i<data['edges'].length;i++)
       {
         if ($scope.inViewEdges.indexOf(data['edges'][i]['handle']) < 0)
@@ -376,17 +377,17 @@ $scope.DeleteHandler=function(category,Id,handle)
       $scope.inViewEdges=[];
       $scope.inViewNodes=[];
       var weaverGraphEndpoint = $scope.config.graphEndPoint;
-        
+      var searchVal=document.getElementById('dropVal').value;
         $.getJSON(weaverGraphEndpoint, 
           {
-              query: $scope.dropVal,
+              query:searchVal ,
               number: $scope.dropValLimit,
               overwrite:'1',
               directionVal: 'U'
           }, 
           function(data) 
           {
-              console.log(data);
+              // console.log(data);
               data=$scope.removeDuplicates(data)
               var config=$scope.config;
               config.dataSource=data;
@@ -549,7 +550,7 @@ $scope.DeleteHandler=function(category,Id,handle)
 
   $scope.CreateNode=function(node)
   {
-    console.log(node.src);
+    // console.log(node.src);
     var jsonObj = {};
     jsonObj['handle']=node.src;
 
@@ -568,8 +569,8 @@ $scope.DeleteHandler=function(category,Id,handle)
 
   $scope.CreateEdge=function(edge)
   {
-    console.log(edge.src);
-    console.log(edge.dst);
+    // console.log(edge.src);
+    // console.log(edge.dst);
     var jsonObj = {};
     jsonObj['source']=edge.src;
     jsonObj['target']=edge.dst
@@ -590,7 +591,7 @@ $scope.DeleteHandler=function(category,Id,handle)
 
 $scope.editProperties=function(element)
 {
-  console.log(element);
+  // console.log(element);
   $('#myModalNode').modal('show');
 }
 
@@ -598,7 +599,7 @@ $scope.deleteProperty=function(key)
 {
   
   key=key.substring(key.indexOf('!@')+2,key.length);
-  console.log(key);
+  // console.log(key);
   delete $scope.editElementProperties[key];
   $scope.refreshContent();
 
@@ -617,7 +618,7 @@ $scope.SaveProperties=function()
         {
           var url=$scope.config.imgPrependURL+dict[key];
           img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
-          console.log(url);
+          // console.log(url);
         }
         else if ($scope.config.popOverTextElements.indexOf(key) > -1)
         {
@@ -641,7 +642,7 @@ $scope.deleteEdges=function(element)
 
 $scope.PropertyModify=function(element,type)
 {
-  console.log(element.self._properties);
+  // console.log(element.self._properties);
   $scope.editElementProperties=jQuery.extend(true, {}, element.self._properties);
   $scope.editElement=element;
   $scope.editElementType=type;
@@ -658,7 +659,7 @@ $scope.refreshContent=function()
 var str="";
 for (var key in $scope.editElementProperties)
 {
-  console.log(key,$scope.editElementProperties[key]);
+  // console.log(key,$scope.editElementProperties[key]);
    str=str+"<div class='form-group'><div class='col-xs-5'> \
       <input  class='form-control keyVal' value='"+key+"' disabled> \
     </div> \
@@ -683,7 +684,7 @@ document.getElementById('modalFormNode').innerHTML=str;
 for (var key in $scope.editElementProperties)
 {
   var id="deleteProperty!@"+key;
-  console.log(id);
+  // console.log(id);
 document.getElementById(id).onclick = function() 
     { 
     (angular.element(document.getElementById('graphcontain').parentNode)).scope().deleteProperty(this.id);
