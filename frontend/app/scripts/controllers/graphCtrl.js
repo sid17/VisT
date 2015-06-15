@@ -425,7 +425,7 @@ $scope.DeleteHandler=function(category,Id,handle)
 
 // document.getElementById('test')
 
-    var str='<div style="height:100%"><a target="__blank" href="https://youtu.be/AD6WavcgVMQ"><b style="font-size:1.5em;color:white">How To Use (Video Demonstration) </b></a><br><b style="font-size:1.5em">Search Brain</b> <br><img src="images/s1.png" height=150 width=400/><br> <b style="font-size:1.5em">Hover over Nodes to view properties</b> <br><img src="images/s2.png" height=150 width=400/><br><b style="font-size:1.5em">Expand the side menu to edit properties</b> <br><img src="images/s3.png" height=150 width=400/> </div>';
+    var str='<div style="height:100%"><a target="__blank" href="https://youtu.be/AD6WavcgVMQ" style="font-size:1.5em;color:white"><b>How To Use (Video Demonstration) </b></a><br><b style="font-size:1.5em">Search Brain</b> <br><img src="images/s1.png" height=150 width=400/><br> <b style="font-size:1.5em">Hover over Nodes to view properties</b> <br><img src="images/s2.png" height=150 width=400/><br><b style="font-size:1.5em">Expand the side menu to edit properties</b> <br><img src="images/s3.png" height=150 width=400/> </div>';
     ngNotify.set(str, {
     theme: 'pastel',
     type: 'success',
