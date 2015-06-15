@@ -21,3 +21,7 @@ confirm data types for weaver elements
 
 
 19) replace all values from arrays to values in weaver api
+
+
+20) update stats in case add nodes and delete nodes/edges
+21) better way to search highlight

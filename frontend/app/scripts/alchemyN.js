@@ -1,8 +1,7 @@
 function WeaverNodeEditor(n,propsArray,category,Id,handle)
 {
 
-  // (angular.element(document.getElementById('graphcontain').parentNode)).scope().PropertyModify(n,category);
-
+  (angular.element(document.getElementById('graphcontain').parentNode)).scope().PropertyModify(n,category);
   str="<form class='form-inline' id='editForm'><br>";
   dict=n.self._properties;
   for (var key in dict)
@@ -15,9 +14,11 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
       str=str+"</div>";
     }       
   }
-  str=str+"<br><button class='btn btn-default' id='EditProps' ng-click='EditProps()'><span style='color:white;font-size:1.5em'>Edit</span></button>"
+  // str=str+"<br><button class='btn btn-default' id='EditProps' ng-click='EditProps()'><span style='color:white;font-size:1.5em'>Edit</span></button>"
+  str=str+"<button type='button' class='btn btn-danger' data-toggle='modal' data-target='#myModalNode' id='nodeModalButton'>Edit Properties</button>"
+
   if (category!='node')
-    str=str+"<button class='btn btn-default' id='DeleteProps' ng-click='DeleteProps()'><span style='color:white;font-size:1.5em'>Delete</span></button>";
+    str=str+"<button type='button' class='btn btn-danger' id='DeleteEdge'>Delete Edge</button>";
   str=str+"<button class='btn btn-default' style='display:none' id='SubmitProps' ng-click='SubmitProps()'><span style='color:white;font-size:1.5em;'>Submit Edits</span></button>";
   str=str+"</form>";
   document.getElementById('insertStuff').innerHTML=str;
@@ -27,23 +28,27 @@ function WeaverNodeEditor(n,propsArray,category,Id,handle)
     if (x[i].childNodes.length>1 )
       document.getElementById(x[i].childNodes[2].id).disabled = true;
   }
-  document.getElementById('EditProps').onclick = function() 
-  { 
-  (angular.element(document.getElementById('graphcontain').parentNode)).scope().EditPropertyHandlerIm(category,Id,handle);
-  };
+  if (category!='node')
+  {
+    document.getElementById('DeleteEdge').onclick = function() 
+    { 
+    (angular.element(document.getElementById('graphcontain').parentNode)).scope().deleteEdge(n);
+    };
+  }
+    
 
   document.getElementById('SubmitProps').onclick = function() 
   { 
   (angular.element(document.getElementById('graphcontain').parentNode)).scope().EditPropertyHandler(category,Id,handle); 
   };
 
-  if (category!='node')
-  {
-    document.getElementById('DeleteProps').onclick = function() 
-  { 
-     (angular.element(document.getElementById('graphcontain').parentNode)).scope().DeleteHandler(n);
-  };
-  }
+  // if (category!='node')
+  // {
+  //   document.getElementById('Delete').onclick = function() 
+  // { 
+  //    (angular.element(document.getElementById('graphcontain').parentNode)).scope().DeleteHandler(n);
+  // };
+  // }
 }
 
 function WeaverEditor(n,type)
@@ -1089,7 +1094,7 @@ function WeaverEditor(n,type)
     return {
       edgeClick: function(d) {
         var propsArray = a.conf.editGraphPropsEdge;
-        console.log(d3.event);
+        // console.log(d3.event);
         
         var edge;
         
@@ -1104,10 +1109,12 @@ function WeaverEditor(n,type)
         if (typeof a.conf.edgeClick === 'function') {
           a.conf.edgeClick(edge);
         }
-        if (edge._state !== "hidden") {
+        if (edge._state !== "hidden") 
+        {
           edge._state = edge._state === "highlighted" ? "selected" : "active";
           return edge.setStyles();
-        }console.log('EdgeClick')
+        }
+        // console.log('EdgeClick')
   
       },
       edgeMouseOver: function(d) {
@@ -1519,7 +1526,7 @@ function WeaverEditor(n,type)
           a.vis.selectAll(".node").classed("inactive", false);
           return a.vis.selectAll(".node").classed("inactive", function(node) {
             var DOMtext, hidden;
-            DOMtext = d3.select(this)[0][0].__data__.self._properties.handle[0];
+            DOMtext = d3.select(this)[0][0].__data__.self._properties.handle;
             var textElement=d3.select(this)[0][0].childNodes[1];
             switch (a.conf.searchMethod) {
               case 'contains':
@@ -1528,9 +1535,10 @@ function WeaverEditor(n,type)
               case 'begins':
                 hidden = DOMtext.toLowerCase().indexOf(input) !== 0;
             }
+            // console.log(DOMtext);
             if (input=="")
             {
-              console.log(textElement);
+              // console.log(textElement);
               textElement.innerHTML='';
               return;
             }
@@ -1629,7 +1637,7 @@ function WeaverEditor(n,type)
       a.layout.positionRootNodes();
       a.force.start();
       var iter=0;
-      console.log(conf.forceLocked);
+      // console.log(conf.forceLocked);
       if (!conf.forceLocked) {
         while (a.force.alpha() > 0.005 && iter < conf.maxIterStart) {
           a.force.tick();
@@ -1728,8 +1736,10 @@ function WeaverEditor(n,type)
         return this.insertSVG("node", nodeData);
       },
       edgeStats: function() {
+        // console.log('Called');
         var activeEdges, allEdges, caption, edgeData, edgeGraph, edgeKeys, edgeNum, edgeStats, edgeType, edgeTypes, inactiveEdges, _i, _len;
         edgeData = [];
+
         allEdges = a.get.allEdges().length;
         activeEdges = a.get.activeEdges().length;
         inactiveEdges = allEdges - activeEdges;
@@ -1744,6 +1754,7 @@ function WeaverEditor(n,type)
               continue;
             }
             caption = edgeType.replace('_', ' ');
+            // console.log(a.get.allEdges());
             edgeNum = _.filter(a.get.allEdges(), function(edge) {
               if (edge._properties[edgeKeys[0]] === edgeType) {
                 return edge;
@@ -1751,6 +1762,13 @@ function WeaverEditor(n,type)
             }).length;
             
 
+            if (edgeNum==0 && document.getElementById('legendEdge-'+edgeType))
+            {
+              var element=document.getElementById('legendEdge-'+edgeType);
+              element.parentNode.removeChild(element);
+            }
+            
+            
             if (edgeNum>0)
             {
               if (document.getElementById('legendEdge-'+edgeType))
@@ -1847,7 +1865,7 @@ function WeaverEditor(n,type)
         a.force.tick();
         iter=iter+1;
       }
-      console.log('Update Called');
+      // console.log('Update Called');
       a.force.on("tick", a.layout.tick).start();
       return a.elements.nodes.svg.attr('transform', function(id, i) {
         return "translate(" + id.x + ", " + id.y + ")";
@@ -2018,7 +2036,6 @@ function WeaverEditor(n,type)
         
         if ((d.id+d.pos) in window.edgeColorMap)
         {
-          
           styles['stroke']=window.edgeColorMap[d.id+d.pos];
         }
         
@@ -3240,9 +3257,36 @@ function WeaverEditor(n,type)
       };
 
       Edge.prototype.remove = function() {
+        // console.log('Entered here');
         var edge, filteredLinkList;
         edge = this;
-        delete this.a._edges[edge.id][edge._index];
+        // console.log(edge._index);
+        // console.log(this.a._edges[edge.id]);
+        this.a._edges[edge.id].splice([edge._index],1);
+
+        // console.log(this.a._edges[edge.id]);
+        // console.log
+        if (this.a._edges[edge.id].length==0)
+        {
+          delete this.a._edges[edge.id];
+        }
+        // console.log(this.a._edges[edge.id]);
+
+        // console.log(this.a.elements.edges);
+        // for (var i=0;i<this.a.elements.edges.length;i++)
+        // {
+        //   if (this.a.elements.edges.id==edge.id && this.a.elements.edges._index==edge._index)
+        //   {
+        //     console.log('Found');
+
+        //   }
+        // }
+        
+        // var arr=this.a._edges[edge.id];
+        // console.log(arr.length);
+        // delete this.a._edges[edge.id]
+        // this.a._edges[edge.id]=arr;
+        // console.log(this.a._edges);
         if (this.a._nodes[edge._properties.source] != null) {
           _.remove(this.a._nodes[edge._properties.source]._adjacentEdges, function(e) {
             if (e.id === edge.id && e._index === edge._index) {

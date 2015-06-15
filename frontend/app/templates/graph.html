@@ -1,6 +1,3 @@
-<!-- <div class='fixed'>
-    
-</div> -->
 <div class="modal fade" id="myModalNode" tabindex="-1" role="dialog" aria-labelledby="myModalNodeLabel" aria-hidden="true" style="z-index:999999">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -9,81 +6,19 @@
         <h4 class="modal-title" id="myModalNodeLabel">Node Add Interface</h4>
       </div>
       <div class="modal-body">
-
-<form ng-submit="addKeyValNode(keyValPairHandle)">
-<!-- <input ng-model="keyValPairHandle" required></input> -->
-<button type="submit" class="btn btn-default" >Add Key Value Pair</button>
-</form>
-
-
-  <form id="modalFormNode" ng-submit="SaveProperties()">
-    
-
-
-
-
-</form>
-
+        <form ng-submit="addKeyValNode(keyValPairHandle)">
+        <input ng-model="keyValPairHandle" required></input>
+        <button type="submit" class="btn btn-default" >Add Key Value Pair</button>
+        </form>
+        <form id="modalFormNode" ng-submit="SaveProperties()">
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        
       </div>
     </div>
   </div>
 </div>
-
-
-<div class="modal fade" id="myModalEdge" tabindex="-1" role="dialog" aria-labelledby="myModalEdgeLabel" aria-hidden="true" style="z-index:999999">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalEdgeLabel">Edge Add Interface</h4>
-      </div>
-      <div class="modal-body">
-       
-  <form id="modalFormEdge">
-  <div class="form-group">
-    <div class="col-xs-6">
-      <input  class="form-control keyVal" value="source" disabled>
-    </div>
-    <div class="col-xs-6">
-      <input  class="form-control keyVal" placeholder="Value"required>
-    </div>
-    </div>
-    <div class="form-group">
-    <div class="col-xs-6">
-      <input  class="form-control keyVal" value="target" disabled>
-    </div>
-    <div class="col-xs-6">
-      <input  class="form-control keyVal" placeholder="Value"required>
-    </div>
-    </div>
-
-    <div class="form-group">
-    <div class="col-xs-6">
-      <input  class="form-control keyVal" value="handle" disabled>
-    </div>
-    <div class="col-xs-6">
-      <input  class="form-control keyVal" placeholder="Value"required>
-    </div>
-    </div>
-
-</form>
-<button class="btn btn-default" ng-click="addKeyValEdge()">Add Key Value Pair</button>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" ng-click="AddEdges()">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
 
 <div class="modal fade" id="styleNodeEdge" tabindex="-1" role="dialog" aria-labelledby="styleNodeLabel" aria-hidden="true" style="z-index:999999">
   <div class="modal-dialog">
@@ -193,8 +128,6 @@ Select Color:
         </div>
     </div>
 </div>
-
-
 <script src="scripts/d3/d3.js"></script>
 <script src="scripts/lodash/distA/lodash.compat.js"></script>
 <script src="scripts/alchemyN.js"></script>

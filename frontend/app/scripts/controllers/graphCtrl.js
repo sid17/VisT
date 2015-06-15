@@ -107,6 +107,7 @@ $scope.styleNodeEdge =function()
   else
   {
      dict=alchemy._edges;
+     // console.log(alchemy._edges);
      for (var key in dict)
     {
       for (var i=0;i<dict[key].length;i++)
@@ -160,7 +161,7 @@ $scope.styleNodeEdge =function()
 
 $scope.EditPropertyHandlerIm=function(category,Id,handle)
 {
-  document.getElementById('EditProps').style.display='none';
+  // document.getElementById('EditProps').style.display='none';
     if (category!='node')
       document.getElementById('DeleteProps').style.display='none';
     document.getElementById('SubmitProps').style.display='block';
@@ -350,6 +351,8 @@ $scope.DeleteHandler=function(category,Id,handle)
         if ($scope.inViewEdges.indexOf(data['edges'][i]['handle']) < 0)
         {
           $scope.inViewEdges.push(data['edges'][i]['handle'])
+          data['edges'][i]['source']=$scope.hashFn(data['edges'][i]['source']);
+          data['edges'][i]['target']=$scope.hashFn(data['edges'][i]['target']);
           edges.push(data['edges'][i]);
         }
       }
@@ -360,7 +363,13 @@ $scope.DeleteHandler=function(category,Id,handle)
         if ($scope.inViewNodes.indexOf(data['nodes'][i]['handle']) < 0)
         {
           $scope.inViewNodes.push(data['nodes'][i]['handle'])
+          var uniqueId=$scope.hashFn(data['nodes'][i]['handle']);
+          data['nodes'][i]['id']=uniqueId;
           nodes.push(data['nodes'][i]);
+
+          // console.log(data['nodes'][i]);
+          // console.log(data['nodes'][i]['handle']);
+          // console.log();
         }
       }
       // console.log(nodes);
@@ -371,7 +380,7 @@ $scope.DeleteHandler=function(category,Id,handle)
     };
     $scope.queryGraph=function()
     {
-      console.log('query');
+      // console.log('query');
       var childNode=document.getElementById('graph').childNodes[0];
       childNode.parentNode.removeChild(childNode);
       $scope.inViewEdges=[];
@@ -389,6 +398,7 @@ $scope.DeleteHandler=function(category,Id,handle)
           {
               // console.log(data);
               data=$scope.removeDuplicates(data)
+              // console.log(data);
               var config=$scope.config;
               config.dataSource=data;
               // console.log(data);
@@ -415,15 +425,15 @@ $scope.DeleteHandler=function(category,Id,handle)
 
 // document.getElementById('test')
 
-    // var str='<div style="height:100%"><b style="font-size:1.5em">Search Brain</b> <br><img src="images/s1.png" height=150 width=400/><br> <b style="font-size:1.5em">Hover over Nodes to view properties</b> <br><img src="images/s2.png" height=150 width=400/><br><b style="font-size:1.5em">Expand the side menu to edit properties</b> <br><img src="images/s3.png" height=150 width=400/> </div>';
-    // ngNotify.set(str, {
-    // theme: 'pastel',
-    // type: 'success',
-    // position:'top',
-    // sticky: true,
-    // html: true,
-    // duration: 500
-    // });
+    var str='<div style="height:100%"><a target="__blank" href="https://youtu.be/AD6WavcgVMQ"><b style="font-size:1.5em;color:white">How To Use (Video Demonstration) </b></a><br><b style="font-size:1.5em">Search Brain</b> <br><img src="images/s1.png" height=150 width=400/><br> <b style="font-size:1.5em">Hover over Nodes to view properties</b> <br><img src="images/s2.png" height=150 width=400/><br><b style="font-size:1.5em">Expand the side menu to edit properties</b> <br><img src="images/s3.png" height=150 width=400/> </div>';
+    ngNotify.set(str, {
+    theme: 'pastel',
+    type: 'success',
+    position:'top',
+    sticky: true,
+    html: true,
+    duration: 500
+    });
     return config;
   };
 
@@ -433,7 +443,11 @@ $scope.DeleteHandler=function(category,Id,handle)
 
   $scope.addKeyValNode=function(val)
   {
+    // $scope.editElementProperties[val]="";
+    // console.log(val);
     $scope.editElementProperties[val]="";
+    $scope.refreshContent();
+    $scope.keyValPairHandle="";
     // var text='<div class="form-group"><div class="col-xs-6"><input  data-identity="added" class="form-control keyVal Added" placeholder="Key"> </div><div class="col-xs-6"><input  data-identity="added" class="form-control keyVal Added" placeholder="Value"></div></div>';
     // var d = document.createElement('div');
     // d.innerHTML = text;
@@ -477,15 +491,7 @@ $scope.DeleteHandler=function(category,Id,handle)
   };
   $scope.hashFn=function(str)
   {
-    var hash = 0;
-    if (str.length == 0) return hash;
-    for (var i = 0; i < str.length; i++) 
-    {
-        var ch = str.charCodeAt(i);
-        hash = ((hash<<5)-hash)+ch;
-        hash = hash & hash; // Convert to 32bit integer
-    }
-    return hash;
+    return murmurHash3.x86.hash32(str);
   };
   $scope.AddEdges=function()
   {
@@ -569,13 +575,13 @@ $scope.DeleteHandler=function(category,Id,handle)
 
   $scope.CreateEdge=function(edge)
   {
-    // console.log(edge.src);
-    // console.log(edge.dst);
     var jsonObj = {};
     jsonObj['source']=edge.src;
     jsonObj['target']=edge.dst
-    
     var edge=JSON.parse(JSON.stringify(jsonObj));
+    edge['source']=$scope.hashFn(edge['source']);
+    edge['target']=$scope.hashFn(edge['target']);
+
     alchemy.create.edges(edge);
     
     var query={};
@@ -607,6 +613,10 @@ $scope.deleteProperty=function(key)
 
 $scope.SaveProperties=function()
 {
+  for (var val in $scope.editElementProperties)
+  {
+    $scope.editElementProperties[val]=document.getElementById('editProperty!@'+val).value;
+  }
   $scope.editElement.self._properties=jQuery.extend(true, {}, $scope.editElementProperties);
   if ($scope.editElementType=='node')
     {
@@ -631,6 +641,7 @@ $scope.SaveProperties=function()
     query['type']='update';
     query['category']=$scope.editElementType;
     query['props']=$scope.editElementProperties;
+    // console.log($scope.editElementProperties);
     $rootScope.writeToLog(query);
 }
 
@@ -640,13 +651,35 @@ $scope.deleteEdges=function(element)
   element.self.remove()
 }
 
+
+$scope.deleteEdge=function(element)
+{
+  var props=element.self._properties;
+  element.self.remove();
+
+  var query={}
+  query['type']='Delete';
+  query['category']='edge';
+  query['props']=props;
+  $rootScope.writeToLog(query);
+  document.getElementById('insertStuff').innerHTML="";
+  // console.log($scope.inViewEdges);
+  // delete $scope.inViewEdges[element.self._properties['handle']];
+  $scope.inViewEdges.splice($scope.inViewEdges.indexOf(element.self._properties['handle']),1);
+  // console.log(element.self._properties['handle'])
+  alchemy.create.edges([]);
+  alchemy.stats.edgeStats();
+}
+
+
 $scope.PropertyModify=function(element,type)
 {
   // console.log(element.self._properties);
   $scope.editElementProperties=jQuery.extend(true, {}, element.self._properties);
   $scope.editElement=element;
   $scope.editElementType=type;
-  $scope.refreshContent()
+  $scope.refreshContent();
+  // $('#myModalNode').modal('show');
 
 
 }
@@ -664,7 +697,7 @@ for (var key in $scope.editElementProperties)
       <input  class='form-control keyVal' value='"+key+"' disabled> \
     </div> \
     <div class='col-xs-5'> \
-      <input  class='form-control keyVal' onchange='alert(\" hello world \");'  value='"+$scope.editElementProperties[key]+"'>  \
+      <input  class='form-control keyVal' id='editProperty!@"+key+"' value='"+$scope.editElementProperties[key]+"'>  \
     </div> \
     <div class='col-xs-2'> \
       <i class='glyphicon glyphicon-trash' style='cursor:pointer' id='deleteProperty!@"+key+"'></i> \
@@ -725,6 +758,7 @@ $scope.isVisible=function(key,type)
       {
         data=$scope.removeDuplicates(data);
         alchemy.create.graph(data);
+        
         // if (data['nodes'].length>0)
         // {
         //   console.log('>0 Nodes');
@@ -737,8 +771,11 @@ $scope.isVisible=function(key,type)
         // }
         
 
-      //   for (var i=0;i<data['nodes'].length;i++)
-      //   {
+        for (var i=0;i<data['nodes'].length;i++)
+        {
+          $scope.addPopOver(data['nodes'][i]);
+          // console.log(data['nodes'][i]);
+        }
           
       // if (alchemy.get.nodes(data['nodes'][i].id).api.length==1)
       //     {
