@@ -14,7 +14,7 @@ def getWeaverProps(props):
 def ProcessNodeData(dataObj,name):
     data=getWeaverProps(dict(dataObj))
     data['__weaver__handle__']=name
-    propName=dictElement(APPCONFIGPARAMS["nodeTypes"])
+    propName=APPCONFIGPARAMS["nodeTypes"]
     if propName in data:
         data['type']=data[propName]
     return data
@@ -24,7 +24,7 @@ def ProcessEdgeData(edge):
     props['source']=edge.start_node
     props['target']=edge.end_node
     props['__weaver__handle__']=edge.handle
-    propName=dictElement(APPCONFIGPARAMS["edgeCategory"])
+    propName=APPCONFIGPARAMS["edgeCategory"]
     if propName in props:
         props['type']=props[propName]
     return props

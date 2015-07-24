@@ -82,7 +82,7 @@ $scope.styleNodeEdge =function()
   
   $('#styleNodeEdge').modal('hide');
 }
-  $rootScope.writeToLog = function (query) 
+  $rootScope.writeToLog = function (query,edge) 
   {
       $rootScope.queryContents=query
       query=JSON.stringify(query);
@@ -91,19 +91,35 @@ $scope.styleNodeEdge =function()
         if (retVal && retVal.data.status && retVal.data.status=='success')
         {
           ngNotify.set('Your Changes were successfully pushed',{type:'success'});
-        }
+          console.log(retVal.data.handle);
+          if (edge)
+          {
+            edge['__weaver__handle__']=retVal.data.handle;
+            alchemy.create.edges(edge);
+          } 
+ 
+          }
         else
         {
           ngNotify.set('Changes Not Pushed, Please Log In', {
           type: 'error'
       });
+          if (edge)
+          {
+            alchemy.create.edges(edge);
+          }
         }
+      
       },
       function (error) {
         ngNotify.set('An error was encountered to push the chages to the server, Error type:'+error, {
           type: 'error'
       });
         $scope.error = error;
+        if (edge)
+        {
+          alchemy.create.edges(edge);
+        }
       }
     );
   };
@@ -226,7 +242,7 @@ $scope.EditPropertyHandler = function(category,Id,handle)
     query['type']='update';
     query['category']=dataCategory;
     query['props']=element._properties;
-    $rootScope.writeToLog(query);
+    $rootScope.writeToLog(query,null);
     
 };
 
@@ -506,7 +522,7 @@ $scope.DeleteHandler=function(category,Id,handle)
     query['type']='create'
     query['category']='edge'
     query['props']=jsonObj
-    $rootScope.writeToLog(query)
+    $rootScope.writeToLog(query,null)
 
   document.getElementById('modalFormEdge').innerHTML='<div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="node" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="edge" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="__weaver__handle__" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div>'
   };
@@ -534,7 +550,7 @@ $scope.DeleteHandler=function(category,Id,handle)
     query['type']='create'
     query['category']='node'
     query['props']=jsonObj
-    $rootScope.writeToLog(query)
+    $rootScope.writeToLog(query,null)
 
   };
 
@@ -554,7 +570,7 @@ $scope.DeleteHandler=function(category,Id,handle)
     query['type']='create'
     query['category']='node'
     query['props']=jsonObj
-    $rootScope.writeToLog(query)
+    $rootScope.writeToLog(query,null)
 
   };
 
@@ -567,13 +583,14 @@ $scope.DeleteHandler=function(category,Id,handle)
     edge['source']=$scope.hashFn(edge['source']);
     edge['target']=$scope.hashFn(edge['target']);
 
-    alchemy.create.edges(edge);
-    
     var query={};
     query['type']='create'
     query['category']='edge'
     query['props']=jsonObj
-    $rootScope.writeToLog(query)
+    $rootScope.writeToLog(query,edge)
+    
+    
+    
 
 
 
@@ -627,7 +644,7 @@ $scope.SaveProperties=function()
     query['category']=$scope.editElementType;
     query['props']=$scope.editElementProperties;
     // console.log($scope.editElementProperties);
-    $rootScope.writeToLog(query);
+    $rootScope.writeToLog(query,null);
 }
 
 $scope.deleteEdges=function(element)
@@ -646,7 +663,7 @@ $scope.deleteEdge=function(element)
   query['type']='Delete';
   query['category']='edge';
   query['props']=props;
-  $rootScope.writeToLog(query);
+  $rootScope.writeToLog(query,null);
   document.getElementById('insertStuff').innerHTML="";
   $scope.inViewEdges.splice($scope.inViewEdges.indexOf(element.self._properties['__weaver__handle__']),1);
   // console.log(element.self._properties['handle'])

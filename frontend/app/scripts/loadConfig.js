@@ -14,6 +14,28 @@ $(function()
                     }
                     
                 }
+                var nodeTypes=config['nodeTypes'];
+                config['nodeTypes']={};
+                config['nodeTypes'][nodeTypes]=[];
+
+                console.log(nodeTypes);
+
+                var edgeCategory=config['edgeCategory'];
+                config['edgeCategory']={};
+                config['edgeCategory'][edgeCategory]=[];
+
+                console.log(config['edgeCategory']);
+                console.log(config['nodeTypes']);
+                console.log(config['popOverTextElements']);
+                
+                config['popOverTextElements']=config['popOverTextElements'].split(',');
+                config['popOverImgElements']=config['popOverImgElements'].split(',');
+                config['editGraphPropsEdge']=config['editGraphPropsEdge'].split(',');
+                config['editGraphPropsNode']=config['editGraphPropsNode'].split(',');
+    
+
+                console.log(config['popOverTextElements']);
+
                 config['nodeStyle']['all']['radius']=function() 
                 {
                     return data['nodeStyle']['radius'];

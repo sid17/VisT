@@ -91,12 +91,11 @@ def process(request):
     if request.method == 'POST':
         print ('Authentic');
         query = request.POST.get('query', None)
-        print query
-        parseQuery(query)
+        output=parseQuery(query)
         with open("weaverUpdates.LOG", "a") as myfile:
             myfile.write(query)
         return json_response({
-            'status': 'success'
+            'status': 'success','handle':output
         })
     elif request.method == 'OPTIONS':
         return json_response({})
@@ -116,9 +115,11 @@ def setconfig(request):
     if request.method == 'POST':
         print ('Authentic');
         query = request.POST.get('query', None)
-        config = request.POST.get('config', None)
+        # config = request.POST.get('config', None)
         print (query)
-        print (config)
+        print type(query)
+        print dir(quer)
+        # print (config)
         import os
         import os.path
         import yaml
@@ -127,13 +128,25 @@ def setconfig(request):
         parentDir=os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
         my_list = parentDir.split('/')
         my_list=my_list[0:-1]
-        configFile="/".join(my_list)+'/frontend/app/scripts/userConfig.js'
+        configFile="/".join(my_list)+'/frontend/app/scripts/config.json'
         print configFile
        
-        r=re.sub(r'\"[A-Za-z]+\":',my_replace,config)
-        print r
+        # r=re.sub(r'\"[A-Za-z]+\":',my_replace,config)
+        # print r
+
         with open(configFile,'w') as f:
-            f.write("var userConfig="+r)
+            f.write(json.dumps(yaml.safe_load(json.dumps(json.loads(query)))))
+
+        configFile="/".join(my_list)+'/config.json'
+        print configFile
+       
+        # r=re.sub(r'\"[A-Za-z]+\":',my_replace,config)
+        # print r
+
+        with open(configFile,'w') as f:
+            f.write(json.dumps(yaml.safe_load(json.dumps(json.loads(query)))))
+
+
         # json_data=open(configFile).read()
         # index=json_data.index('=')
         # print index

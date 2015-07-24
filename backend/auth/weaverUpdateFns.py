@@ -63,15 +63,15 @@ def parseQuery(query):
 	print query
 	if query['type']=='create' and query['category']=='node':
 		print 'Hello'
-		createNode(query['props']['__weaver__handle__'])
+		return createNode(query['props']['__weaver__handle__'])
 	elif query['type']=='create' and query['category']=='edge':
-		createEdge(query['props']['source'],query['props']['target'])
+		return createEdge(query['props']['source'],query['props']['target'])
 	elif query['type']=='delete':
-		deleteEdge(query['props']['__weaver__handle__'])
+		return deleteEdge(query['props']['__weaver__handle__'])
 	elif query['type']=='update' and query['category']=='node':
-		updateNode(query['props'])
+		return updateNode(query['props'])
 	elif query['type']=='update' and query['category']=='edge':
-		updateEdge(query['props'])
+		return updateEdge(query['props'])
 	else :
 		print 'Unknown query'
 

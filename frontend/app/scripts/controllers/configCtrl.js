@@ -5,14 +5,17 @@ angular.module('visualisationTool')
 
   	    $scope.setConfig = function (query) 
 	  	{
+
+
 	      query=JSON.stringify(query);
+	      console.log(query);
 	      AuthService.setConfiguration(query).then(
 	      function (retVal) {
 	      	console.log(retVal);
 	        if (retVal && retVal.data.status && retVal.data.status=='success')
 	        {
 	          ngNotify.set('Configuration set successfully',{type:'success'});
-	          for (var attrname in userConfig) { config[attrname] = userConfig[attrname]; }
+	  
 	        }
 	        else
 	        {
@@ -28,6 +31,67 @@ angular.module('visualisationTool')
 
 	  };
 
+
+	  $scope.checkDict=function(value)
+	  {
+	  	// console.log(value);
+
+	  	if(value.constructor == Array)
+	  	{
+	  		return false;
+		}
+		else if(value.constructor == Object)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+
+	  	
+	  }
+
+
+
+	  $scope.checkSpecialConfig=function(value)
+	  {
+	  	if (value=='nodeType' || value=="edgeCategory")
+	  	{
+	  		return true;
+	  	}
+	  	else
+	  	{
+	  		return false;
+	  	}
+	  	
+	  }
+
+
+	 $scope.onConfig=function()
+	 {
+	 	jQuery.ajax({
+        url:"scripts/config.json", 
+        async:true,
+        success:function(data) 
+           {
+               $scope.configSettings=data;
+               console.log($scope.configSettings);
+               $scope.$apply();
+           }})
+            .done(function() 
+            {
+                console.log( "success loaded configurations" );
+            })
+          .fail(
+            function( jqxhr, textStatus, error ) 
+            {
+                var err = textStatus + ", " + error;
+                console.log( "Request Failed: " + err );
+            });
+
+	 } 
 
 
 

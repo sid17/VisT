@@ -77,12 +77,8 @@ app.factory('AuthService', function ($http,$window, $q,$rootScope,ngNotify) {
     var setConfiguration = function (query) {
     var deferred = $q.defer();
     var url = config.logInEndPoint + 'config/';
-    query=JSON.parse(query);
-    for (var key in query)
-    {
-      userConfig[key]=query[key];
-    }
-    $http.post(url, 'query='+query+'&config='+JSON.stringify(userConfig),{
+    console.log(query);
+    $http.post(url, 'query='+query,{
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
