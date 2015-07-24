@@ -1298,7 +1298,7 @@ function WeaverEditor(n,type)
         }
       },
       nodeDoubleClick: function(d) {
-        (angular.element(document.getElementById('graphcontain').parentNode)).scope().addMoreNodes(d.self._properties.__weaver__handle__);
+        (angular.element(document.getElementById('graphcontain').parentNode)).scope().addMoreNodes(d.self._properties.caption);
         return null;
       },
       deselectAll: function() {
@@ -1748,10 +1748,6 @@ function WeaverEditor(n,type)
           edgeKeys=Object.keys(a.conf.edgeCategory);
           edgeTypes = '';
           _ref = a.conf.edgeCategory[edgeKeys];
-          if (! _ref)
-          {
-            return ;
-          }
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             edgeType = _ref[_i];
             if (!edgeType) {

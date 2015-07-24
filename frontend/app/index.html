@@ -3,7 +3,7 @@
 <html class="no-js"> <!--<![endif]-->
 <head>
     <!-- Meta-Information -->
-    <title>RoboBrain Graph</title>
+    <title>Weaver Visualization Tool</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,7 +35,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">RoboBrain Visualisation</a>
+            <a class="navbar-brand" href="#">Weaver Visualisation</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar"  style="padding-right:30px">
             <ul class="nav navbar-nav navbar-right">
@@ -89,7 +89,9 @@
 
 
                 <li >
-                    
+                 <a href='#configure' style="cursor:pointer"> Configure </a>
+                        
+
                 </li>
                  <li >
                     <a ng-show="loggedIn" ng-click="logout()" style="cursor:pointer"> LogOut </a>   
@@ -136,6 +138,9 @@
 
 <!-- Our Website Javascripts -->
 <script src="scripts/alchemyConfig.js"></script>
+<script src="scripts/loadConfig.js"></script>
+
+
 <script src="scripts/main.js"></script>
 <script src="scripts/controllers/graphCtrl.js"></script>
 <script src="scripts/controllers/navBarCtrl.js"></script>
@@ -150,9 +155,5 @@
 <script src="scripts/d3-bootstrap-plugins.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.0/spectrum.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.6.1/spectrum.min.css">
-
-
-
-
 </body>
 </html>

@@ -1,7 +1,9 @@
 {
   "name": "vist",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "stringify-object": "^2.0.0"
+  },
   "repository": {},
   "devDependencies": {
     "grunt": "^0.4.5",

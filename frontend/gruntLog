@@ -1,0 +1,160 @@
+[31m>> [39mLocal Npm module "grunt-ng-annotate" not found. Is it installed?
+
+[4mRunning "serve" task[24m
+
+[4mRunning "clean:server" (clean) task[24m
+[32m>> [39m0 paths cleaned.
+
+[4mRunning "wiredep:app" (wiredep) task[24m
+
+[4mRunning "wiredep:test" (wiredep) task[24m
+
+[4mRunning "wiredep:sass" (wiredep) task[24m
+
+[4mRunning "concurrent:server" (concurrent) task[24m
+    
+    [31m>> [39mLocal Npm module "grunt-ng-annotate" not found. Is it installed?
+    
+    [4mRunning "compass:server" (compass) task[24m
+    
+    [32mDone, without errors.[39m
+    
+    
+    Execution Time (2015-07-24 02:08:25 UTC)
+    compass:server  5s  ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 100%
+    Total 5s
+    
+[4mRunning "autoprefixer:server" (autoprefixer) task[24m
+
+[4mRunning "connect:livereload" (connect) task[24m
+Started connect web server on http://localhost:4242
+
+[4mRunning "watch" task[24m
+Waiting...
+[32m>> [39mFile "app/scripts/controllers/graphCtrl.js" changed.
+[31m>> [39mLocal Npm module "grunt-ng-annotate" not found. Is it installed?
+
+[4mRunning "newer:jshint:all" (newer) task[24m
+
+[4mRunning "jshint:all" (jshint) task[24m
+[31mERROR[0m: Can't find config file: .jshintrc
+
+
+Execution Time (2015-07-24 02:09:21 UTC)
+jshint:all  3.3s  ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 99%
+Total 3.3s
+
+[36mCompleted in 5.844s at Thu Jul 23 2015 22:09:24 GMT-0400 (EDT)[39m - Waiting...
+[32m>> [39mFile "app/scripts/controllers/graphCtrl.js" changed.
+[31m>> [39mLocal Npm module "grunt-ng-annotate" not found. Is it installed?
+
+[4mRunning "newer:jshint:all" (newer) task[24m
+
+[4mRunning "jshint:all" (jshint) task[24m
+[31mERROR[0m: Can't find config file: .jshintrc
+
+
+Execution Time (2015-07-24 02:09:32 UTC)
+jshint:all  2.3s  ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 99%
+Total 2.3s
+
+[36mCompleted in 4.793s at Thu Jul 23 2015 22:09:34 GMT-0400 (EDT)[39m - Waiting...
+[32m>> [39mFile "app/scripts/controllers/graphCtrl.js" changed.
+[31m>> [39mLocal Npm module "grunt-ng-annotate" not found. Is it installed?
+
+[4mRunning "newer:jshint:all" (newer) task[24m
+
+[4mRunning "jshint:all" (jshint) task[24m
+[31mERROR[0m: Can't find config file: .jshintrc
+
+
+Execution Time (2015-07-24 02:09:53 UTC)
+jshint:all  2.4s  ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 99%
+Total 2.4s
+
+[36mCompleted in 5.293s at Thu Jul 23 2015 22:09:55 GMT-0400 (EDT)[39m - Waiting...
+[32m>> [39mFile "app/scripts/controllers/graphCtrl.js" changed.
+[31m>> [39mLocal Npm module "grunt-ng-annotate" not found. Is it installed?
+
+[4mRunning "newer:jshint:all" (newer) task[24m
+
+[4mRunning "jshint:all" (jshint) task[24m
+[31mERROR[0m: Can't find config file: .jshintrc
+
+
+Execution Time (2015-07-24 02:10:00 UTC)
+jshint:all  2.2s  ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 99%
+Total 2.2s
+
+[36mCompleted in 5.240s at Thu Jul 23 2015 22:10:02 GMT-0400 (EDT)[39m - Waiting...
+[32m>> [39mFile "app/scripts/controllers/graphCtrl.js" changed.
+[31m>> [39mLocal Npm module "grunt-ng-annotate" not found. Is it installed?
+
+[4mRunning "newer:jshint:all" (newer) task[24m
+
+[4mRunning "jshint:all" (jshint) task[24m
+[31mERROR[0m: Can't find config file: .jshintrc
+
+
+Execution Time (2015-07-24 02:10:13 UTC)
+jshint:all  2.5s  ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 99%
+Total 2.5s
+
+[36mCompleted in 5.531s at Thu Jul 23 2015 22:10:16 GMT-0400 (EDT)[39m - Waiting...
+[32m>> [39mFile "app/scripts/controllers/graphCtrl.js" changed.
+[31m>> [39mLocal Npm module "grunt-ng-annotate" not found. Is it installed?
+
+[4mRunning "newer:jshint:all" (newer) task[24m
+
+[4mRunning "jshint:all" (jshint) task[24m
+[31mERROR[0m: Can't find config file: .jshintrc
+
+
+Execution Time (2015-07-24 02:11:19 UTC)
+jshint:all  2.3s  ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 99%
+Total 2.4s
+
+[36mCompleted in 5.146s at Thu Jul 23 2015 22:11:22 GMT-0400 (EDT)[39m - Waiting...
+[32m>> [39mFile "app/scripts/controllers/graphCtrl.js" changed.
+[31m>> [39mLocal Npm module "grunt-ng-annotate" not found. Is it installed?
+
+[4mRunning "newer:jshint:all" (newer) task[24m
+
+[4mRunning "jshint:all" (jshint) task[24m
+[31mERROR[0m: Can't find config file: .jshintrc
+
+
+Execution Time (2015-07-24 02:11:26 UTC)
+jshint:all  2.2s  ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 99%
+Total 2.2s
+
+[36mCompleted in 5.292s at Thu Jul 23 2015 22:11:28 GMT-0400 (EDT)[39m - Waiting...
+[32m>> [39mFile "app/scripts/controllers/graphCtrl.js" changed.
+[31m>> [39mLocal Npm module "grunt-ng-annotate" not found. Is it installed?
+
+[4mRunning "newer:jshint:all" (newer) task[24m
+
+[4mRunning "jshint:all" (jshint) task[24m
+[31mERROR[0m: Can't find config file: .jshintrc
+
+
+Execution Time (2015-07-24 02:11:34 UTC)
+jshint:all  2.2s  ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 99%
+Total 2.2s
+
+[36mCompleted in 5.246s at Thu Jul 23 2015 22:11:37 GMT-0400 (EDT)[39m - Waiting...
+[32m>> [39mFile "app/scripts/controllers/graphCtrl.js" changed.
+[31m>> [39mLocal Npm module "grunt-ng-annotate" not found. Is it installed?
+
+[4mRunning "newer:jshint:all" (newer) task[24m
+
+[4mRunning "jshint:all" (jshint) task[24m
+[31mERROR[0m: Can't find config file: .jshintrc
+
+
+Execution Time (2015-07-24 02:11:43 UTC)
+newer:jshint:all  22ms  ▇ 1%
+jshint:all          2s  ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 99%
+Total 2s
+
+[36mCompleted in 4.951s at Thu Jul 23 2015 22:11:45 GMT-0400 (EDT)[39m - Waiting...

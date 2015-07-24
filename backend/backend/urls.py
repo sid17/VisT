@@ -10,5 +10,6 @@ urlpatterns = patterns('',
     url(r'^api/logout/$', 'auth.views.logout'),
     url(r'^api/process/$', 'auth.views.process'),
     url(r'^graph/getNode/$','graph.views.getNode'),
+    url(r'^api/config/$','auth.views.setconfig'),
     url(r'^admin/', include(admin.site.urls)),
 )

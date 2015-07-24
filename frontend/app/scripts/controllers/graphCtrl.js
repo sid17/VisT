@@ -2,51 +2,10 @@
 
 angular.module('visualisationTool')
   .controller('graphCtrl', ['$scope', '$http','$rootScope', '$window','AuthService','$location','ngNotify','$log','$compile',function ($scope, $http,$rootScope,$window,AuthService,$location,ngNotify,$log,$compile) {
-    
 
-$scope.myInterval = 5000;
-  var slides = $scope.slides = [];
-  $scope.addSlide = function() {
-    var newWidth = 600 + slides.length + 1;
-    slides.push({
-      image: 'http://placekitten.com/' + newWidth + '/300',
-      text: ['More','Extra','Lots of','Surplus'][slides.length % 4] + ' ' +
-        ['Cats', 'Kittys', 'Felines', 'Cutes'][slides.length % 4]
-    });
-  };
-  for (var i=0; i<4; i++) {
-    $scope.addSlide();
-  }
-
-
-
-$scope.dropVal='phone';
+$scope.dropVal='';
 $scope.dropValLimit='10';
 
-$scope.items = [
-    'watching',
-    'human',
-    'standing_human',
-    'sitting_human',
-    'phone',
-    'ceiling',
-    'pen'
-  ];
-
-  $scope.status = {
-    isopen: false
-  };
-
-  $scope.toggled = function(open) {
-
-    // $log.log('Dropdown is now: ', open);
-  };
-
-  $scope.toggleDropdown = function($event) {
-    $event.preventDefault();
-    $event.stopPropagation();
-    $scope.status.isopen = !$scope.status.isopen;
-  };
 
   $scope.searchBrain=function()
   {
@@ -54,17 +13,7 @@ $scope.items = [
     $scope.queryGraph();
 
   }
-  $scope.record=function(val)
-  {
-   // $scope.dropVal=val;
-   document.getElementById('dropVal').value=val;
-  }
-
-
-
-
-
-
+  
     $rootScope.logout = function () {
       // console.log('Logout Called');
       AuthService.logout().then(
@@ -236,7 +185,7 @@ $scope.EditPropertyHandler = function(category,Id,handle)
       for (var i=0;i<alchemy._edges[Id].length;i++)
       {
         
-        if (alchemy._edges[Id][i]._properties['handle']==handle)
+        if (alchemy._edges[Id][i]._properties['__weaver__handle__']==handle)
         {
           element=alchemy._edges[Id][i];
           break;
@@ -348,24 +297,49 @@ $scope.DeleteHandler=function(category,Id,handle)
       // console.log(data);
       for (var i=0;i<data['edges'].length;i++)
       {
-        if ($scope.inViewEdges.indexOf(data['edges'][i]['handle']) < 0)
+        if ($scope.inViewEdges.indexOf(data['edges'][i]['__weaver__handle__']) < 0)
         {
-          $scope.inViewEdges.push(data['edges'][i]['handle'])
+          $scope.inViewEdges.push(data['edges'][i]['__weaver__handle__'])
           data['edges'][i]['source']=$scope.hashFn(data['edges'][i]['source']);
           data['edges'][i]['target']=$scope.hashFn(data['edges'][i]['target']);
           edges.push(data['edges'][i]);
+
+           if ('type' in data['edges'][i])
+          {
+            for (var key in config['edgeCategory'])
+            {
+              if (config['edgeCategory'][key].indexOf(data['edges'][i]['type'])<0)
+            {
+                config['edgeCategory'][key].push(data['edges'][i]['type']);
+            }
+            }
+            
+          }
+
+
         }
       }
 
 
       for (var i=0;i<data['nodes'].length;i++)
       {
-        if ($scope.inViewNodes.indexOf(data['nodes'][i]['handle']) < 0)
+        if ($scope.inViewNodes.indexOf(data['nodes'][i]['__weaver__handle__']) < 0)
         {
-          $scope.inViewNodes.push(data['nodes'][i]['handle'])
-          var uniqueId=$scope.hashFn(data['nodes'][i]['handle']);
+          $scope.inViewNodes.push(data['nodes'][i]['__weaver__handle__'])
+          var uniqueId=$scope.hashFn(data['nodes'][i]['__weaver__handle__']);
           data['nodes'][i]['id']=uniqueId;
           nodes.push(data['nodes'][i]);
+            if ('type' in data['nodes'][i])
+          {
+            for (var key in config['nodeTypes'])
+            {
+              if (config['nodeTypes'][key].indexOf(data['nodes'][i]['type'])<0)
+            {
+                config['nodeTypes'][key].push(data['nodes'][i]['type']);
+            }
+            }
+            
+          }
 
           // console.log(data['nodes'][i]);
           // console.log(data['nodes'][i]['handle']);
@@ -376,6 +350,17 @@ $scope.DeleteHandler=function(category,Id,handle)
       // console.log(edges);
       data['nodes']=nodes;
       data['edges']=edges;
+
+      console.log(config['nodeTypes']);
+      console.log(config['edgeCategory']);
+      console.log(alchemy.conf);
+      for (var key in config)
+      {
+        if (key in alchemy.conf)
+        {
+          alchemy.conf[key]=config[key];
+        }
+      }
       return data;
     };
     $scope.queryGraph=function()
@@ -396,7 +381,7 @@ $scope.DeleteHandler=function(category,Id,handle)
           }, 
           function(data) 
           {
-              // console.log(data);
+              console.log(data);
               data=$scope.removeDuplicates(data)
               // console.log(data);
               var config=$scope.config;
@@ -425,14 +410,13 @@ $scope.DeleteHandler=function(category,Id,handle)
 
 // document.getElementById('test')
 
-    var str='<div style="height:100%"><a target="__blank" href="https://youtu.be/AD6WavcgVMQ" style="font-size:1.5em;color:white"><b>How To Use (Video Demonstration) </b></a><br><b style="font-size:1.5em">Search Brain</b> <br><img src="images/s1.png" height=150 width=400/><br> <b style="font-size:1.5em">Hover over Nodes to view properties</b> <br><img src="images/s2.png" height=150 width=400/><br><b style="font-size:1.5em">Expand the side menu to edit properties</b> <br><img src="images/s3.png" height=150 width=400/> </div>';
+    var str='The current system is in beta. Use it carefully';
     ngNotify.set(str, {
-    theme: 'pastel',
-    type: 'success',
+    type: 'warn',
     position:'top',
-    sticky: true,
+    sticky: false,
     html: true,
-    duration: 500
+    duration:700
     });
     return config;
   };
@@ -515,7 +499,7 @@ $scope.DeleteHandler=function(category,Id,handle)
     }
     else
     {
-      alchemy.create.edges(edge);
+      console.log(alchemy.create.edges(edge));
     }
 
     var query={};
@@ -523,7 +507,8 @@ $scope.DeleteHandler=function(category,Id,handle)
     query['category']='edge'
     query['props']=jsonObj
     $rootScope.writeToLog(query)
-  document.getElementById('modalFormEdge').innerHTML='<div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="node" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="edge" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="handle" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div>'
+
+  document.getElementById('modalFormEdge').innerHTML='<div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="node" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="edge" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="__weaver__handle__" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div>'
   };
   $scope.AddNodes=function()
   {
@@ -538,11 +523,11 @@ $scope.DeleteHandler=function(category,Id,handle)
         jsonObj[key]=x[i+1].value
       }
     }
-    jsonObj['id']=$scope.hashFn(jsonObj['handle']);
+    jsonObj['id']=$scope.hashFn(jsonObj['__weaver__handle__']);
     jsonObj['root']=true;
     var node=JSON.parse(JSON.stringify(jsonObj));
     alchemy.create.nodes(node);
-    document.getElementById('modalFormNode').innerHTML='<div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="handle" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div>'
+    document.getElementById('modalFormNode').innerHTML='<div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="__weaver__handle__" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div>'
     $scope.addPopOver(jsonObj);
     
     var query={};
@@ -558,9 +543,9 @@ $scope.DeleteHandler=function(category,Id,handle)
   {
     // console.log(node.src);
     var jsonObj = {};
-    jsonObj['handle']=node.src;
+    jsonObj['__weaver__handle__']=node.src;
 
-    jsonObj['id']=$scope.hashFn(jsonObj['handle']);
+    jsonObj['id']=$scope.hashFn(jsonObj['__weaver__handle__']);
     var nodeObj=JSON.parse(JSON.stringify(jsonObj));
     alchemy.create.nodes(nodeObj);
     $scope.addPopOver(jsonObj);
@@ -663,9 +648,7 @@ $scope.deleteEdge=function(element)
   query['props']=props;
   $rootScope.writeToLog(query);
   document.getElementById('insertStuff').innerHTML="";
-  // console.log($scope.inViewEdges);
-  // delete $scope.inViewEdges[element.self._properties['handle']];
-  $scope.inViewEdges.splice($scope.inViewEdges.indexOf(element.self._properties['handle']),1);
+  $scope.inViewEdges.splice($scope.inViewEdges.indexOf(element.self._properties['__weaver__handle__']),1);
   // console.log(element.self._properties['handle'])
   alchemy.create.edges([]);
   alchemy.stats.edgeStats();

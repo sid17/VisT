@@ -1,9 +1,9 @@
 'use strict';
 
-app.factory('AuthService', function ($http,$window, $q, API_SERVER,$rootScope,ngNotify) {
+app.factory('AuthService', function ($http,$window, $q,$rootScope,ngNotify) {
 
   var authenticate = function (username, password, endpoint) {
-    var url = API_SERVER + endpoint;
+    var url = config.logInEndPoint + endpoint;
     var deferred = $q.defer();
 
     $http.post(url, 'username=' + username + '&password=' + password, {
@@ -32,7 +32,7 @@ app.factory('AuthService', function ($http,$window, $q, API_SERVER,$rootScope,ng
 
   var logout = function () {
     var deferred = $q.defer();
-    var url = API_SERVER + 'logout/';
+    var url = config.logInEndPoint + 'logout/';
 
     $http.post(url).then(
       function () {
@@ -55,7 +55,7 @@ app.factory('AuthService', function ($http,$window, $q, API_SERVER,$rootScope,ng
     var query=$rootScope.queryContents;
     console.log(query)
     var deferred = $q.defer();
-    var url = API_SERVER + 'process/';
+    var url = config.logInEndPoint + 'process/';
 
     $http.post(url, 'query='+JSON.stringify(query),{
       headers: {
@@ -74,6 +74,34 @@ app.factory('AuthService', function ($http,$window, $q, API_SERVER,$rootScope,ng
   };
 
 
+    var setConfiguration = function (query) {
+    var deferred = $q.defer();
+    var url = config.logInEndPoint + 'config/';
+    query=JSON.parse(query);
+    for (var key in query)
+    {
+      userConfig[key]=query[key];
+    }
+    $http.post(url, 'query='+query+'&config='+JSON.stringify(userConfig),{
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+    .then(
+      function (response) {  
+        deferred.resolve(response);
+      },
+      function (error) {
+        deferred.reject(error.data.error);
+      }
+    );
+    return deferred.promise;
+  };
+
+
+
+
+
 
 
   return {
@@ -88,6 +116,9 @@ app.factory('AuthService', function ($http,$window, $q, API_SERVER,$rootScope,ng
     },
     submitToLog: function () {
       return submitToLog();
+    },
+    setConfiguration: function (query) {
+      return setConfiguration(query);
     }
   };
 

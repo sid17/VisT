@@ -1,4 +1,5 @@
 var config = {
+  logInEndPoint:'http://127.0.0.1:5000/api/',
   dataSource: '.',                      
   nodeCaptionsOnByDefault:true,
   rootNodeRadius: 36,

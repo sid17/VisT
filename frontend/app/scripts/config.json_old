@@ -1,0 +1,38 @@
+{
+	"popOverTextElements":["__weaver__handle__","labels"],
+	"popOverImgElements":["mediapath"],
+	"imgPrependURL":"http://d1rygkc2z32bg1.cloudfront.net/",
+	"graphEndPoint":"http://127.0.0.1:5000/graph/getNode/",
+	"editGraphPropsEdge":["source","target","__weaver__handle__","id"],
+	"editGraphPropsNode":["__weaver__handle__","mediapath","labels","id"],
+	"nodeCaption":"",
+	"edgeCaption":"__weaver__handle__",
+	"nodeTypes":{"__weaver__handle__":["ayush","egs"]},
+	"edgeCategory":{"type":["SAME_SYNSET","HAS_MEDIA","SPATIALLY_DISTRIBUTED_AS"]},
+	"edgeCategory":"type",
+	"curvedEdges":false,
+	"searchMethod":"begins",
+	"weaverIP":"127.0.0.1",
+	"weaverPort":"2002",
+	"angularIP":"http://127.0.0.1",
+	"angularPort":"4242",
+	"djangoIP":"http://127.0.0.1",
+	"djangoPort":"5000",
+	"rootNodeRadius": 36,
+	"graphHeight":440,
+	"nodeStyle":
+	{
+      "borderColor": "#127DC1",
+      "color": "rgb(135, 206, 250)", 
+      "radius":28, 
+      "captionColor": "#000000",
+      "captionBackground": null,
+      "captionSize": 20,
+      "highlightedColor": "#1FBED6"
+  	},
+  	"edgeStyle": 
+  	{
+      "width": 4,
+      "color": "#006400"
+  	}
+}

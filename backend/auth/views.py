@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 from auth.models import Token
 from auth.utils import json_response, token_required
-
+from weaverUpdateFns import parseQuery
 @csrf_exempt
 def register(request):
     if request.method == 'POST':
@@ -91,8 +91,65 @@ def process(request):
     if request.method == 'POST':
         print ('Authentic');
         query = request.POST.get('query', None)
+        print query
+        parseQuery(query)
         with open("weaverUpdates.LOG", "a") as myfile:
             myfile.write(query)
+        return json_response({
+            'status': 'success'
+        })
+    elif request.method == 'OPTIONS':
+        return json_response({})
+    else:
+        return json_response({
+            'error': 'Invalid Method'
+        }, status=405)
+
+def my_replace(match):
+    match=match.group()
+    print match
+    return match[1:-2]+':'
+
+@csrf_exempt
+@token_required
+def setconfig(request):
+    if request.method == 'POST':
+        print ('Authentic');
+        query = request.POST.get('query', None)
+        config = request.POST.get('config', None)
+        print (query)
+        print (config)
+        import os
+        import os.path
+        import yaml
+        import json
+        import re
+        parentDir=os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+        my_list = parentDir.split('/')
+        my_list=my_list[0:-1]
+        configFile="/".join(my_list)+'/frontend/app/scripts/userConfig.js'
+        print configFile
+       
+        r=re.sub(r'\"[A-Za-z]+\":',my_replace,config)
+        print r
+        with open(configFile,'w') as f:
+            f.write("var userConfig="+r)
+        # json_data=open(configFile).read()
+        # index=json_data.index('=')
+        # print index
+        # prefix=json_data[0:index]
+        # # print prefix
+        # suffix=json_data[index+1:]
+        # print suffix
+        # CONFIG = json.loads(suffix)
+        # print CONFIG
+        # query= yaml.safe_load(query)
+        # for key,val in query.iteritems():
+        #     print key,val
+        
+        # print ppDir
+        # with open("weaverUpdates.LOG", "a") as myfile:
+        #     myfile.write(query)
         return json_response({
             'status': 'success'
         })
