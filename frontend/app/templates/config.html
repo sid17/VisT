@@ -1,3 +1,19 @@
+
+<nav class="navbar navbar-findcond navbar-fixed-top" ng-controller='navBarCtrl'>
+    <div class="container">
+        <div class="navbar-header" style="padding-left:10px">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Weaver Visualisation</a>
+        </div>  
+        </div>
+    </div>
+</nav>
+
 <div class="container">
   <!-- Row start -->
   <div class="row" ng-init='onConfig()'>
@@ -8,7 +24,7 @@
           <h3 class="panel-title">Configuration</h3>
         </div>
         <div class="panel-body">
-          <form class="form-horizontal row-border">
+          <form class="form-horizontal row-border" ng-submit='setConfig(configSettings)'>
 <!-- graphEndPoint:'http://52.25.65.189:6363/graph/getNode/',
   logInEndPoint:'http://127.0.0.1:5000/api/', -->
             <div class="form-group">
@@ -81,7 +97,7 @@
 
 
             </div>
-            <button class="btn btn-primary pull-right" ng-click='setConfig(configSettings)'>Submit Configuration</button>
+            <button class="btn btn-primary pull-right" type="submit">Submit Configuration</button>
           </form>
         </div>
       </div>

@@ -118,7 +118,7 @@ def setconfig(request):
         # config = request.POST.get('config', None)
         print (query)
         print type(query)
-        print dir(quer)
+        print dir(query)
         # print (config)
         import os
         import os.path

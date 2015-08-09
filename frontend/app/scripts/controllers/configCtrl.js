@@ -5,13 +5,15 @@ angular.module('visualisationTool')
 
   	    $scope.setConfig = function (query) 
 	  	{
-
-
 	      query=JSON.stringify(query);
 	      console.log(query);
 	      AuthService.setConfiguration(query).then(
 	      function (retVal) {
 	      	console.log(retVal);
+	      	if (!retVal)
+	      	{
+	      		 alert('Error Setting Configuration, check if you are logged In');
+	      	}
 	        if (retVal && retVal.data.status && retVal.data.status=='success')
 	        {
 	          ngNotify.set('Configuration set successfully',{type:'success'});
@@ -23,8 +25,7 @@ angular.module('visualisationTool')
 	        }
 	      },
 	      function (error) {
-	        ngNotify.set('An error was encountered to set the configuration parameters, Error type:'+error, {type: 'error'
-	      });
+	        ngNotify.set('An error was encountered to set the configuration parameters, Error type:'+error, {type: 'error'});
 	      }
 	    );
 

@@ -1,0 +1,12 @@
+sudo apt-get install python-pip nodejs npm
+sudo pip install django
+sudo npm install -g grunt-cli 
+cd frontend
+sudo npm install
+cd ..
+cd backend
+sudo pip install -r requirements.txt
+./manage.py syncdb
+cd ..
+python start.py
+python stop.py

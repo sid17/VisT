@@ -77,7 +77,26 @@ app.factory('AuthService', function ($http,$window, $q,$rootScope,ngNotify) {
     var setConfiguration = function (query) {
     var deferred = $q.defer();
     var url = config.logInEndPoint + 'config/';
-    console.log(query);
+    // console.log(query);
+    //  $.getJSON(url, 
+    //       {
+    //           query:query
+    //       }, 
+    //       function(retVal) 
+    //       {
+    //       console.log(retVal);
+    //       if (retVal && retVal.data.status && retVal.data.status=='success')
+    //       {
+    //         ngNotify.set('Configuration set successfully',{type:'success'});
+    
+    //       }
+    //       else
+    //       {
+    //         ngNotify.set('Please log In , Error setting the configuration',{type:'error'});
+    //       }
+    //       })
+    //       .error(function() {  ngNotify.set('Error: Check if you are logged in',{type:'error'}); });
+
     $http.post(url, 'query='+query,{
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'

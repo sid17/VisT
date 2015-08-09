@@ -9,13 +9,10 @@ $scope.dropValLimit='10';
 
   $scope.searchBrain=function()
   {
-    // console.log('searching');
     $scope.queryGraph();
-
   }
   
     $rootScope.logout = function () {
-      // console.log('Logout Called');
       AuthService.logout().then(
       function () {
         $location.path('/');
@@ -44,19 +41,13 @@ $scope.styleNodeEdge =function()
         
         $window.nodeColorMap[node.id]=color;
         node.setStyles();
-        // node._style['color']=color;
-        
-        // node.setStyles('borderColor',color);
-
       }
       
     }
-    // console.log($window.nodeColorMap);
   }
   else
   {
      dict=alchemy._edges;
-     // console.log(alchemy._edges);
      for (var key in dict)
     {
       for (var i=0;i<dict[key].length;i++)
@@ -64,25 +55,18 @@ $scope.styleNodeEdge =function()
         var edge=dict[key][i];
         if (edge._properties['type']==y)
         {
-          // console.log('TRUE');
-          // console.log(edge);
-          // edge._style['stroke']='black';
-          // edge._style['color']='black';
-          // console.log(edge._style)
-          // console.log(edge.id);
           $window.edgeColorMap[edge.id+edge._index]=color;
           edge.setStyles();
 
         }
       }
-      // console.log($window.edgeColorMap);
     }    
   }
 
   
   $('#styleNodeEdge').modal('hide');
 }
-  $rootScope.writeToLog = function (query,edge) 
+  $rootScope.writeToLog = function (query,element,jsonObj,val) 
   {
       $rootScope.queryContents=query
       query=JSON.stringify(query);
@@ -92,22 +76,28 @@ $scope.styleNodeEdge =function()
         {
           ngNotify.set('Your Changes were successfully pushed',{type:'success'});
           console.log(retVal.data.handle);
-          if (edge)
+          if (val=='edge' && element)
           {
-            edge['__weaver__handle__']=retVal.data.handle;
-            alchemy.create.edges(edge);
+            element['__weaver__handle__']=retVal.data.handle;
+            alchemy.create.edges(element);
           } 
- 
+          if (val=='node' && element)
+          {
+            alchemy.create.nodes(element);
+           $scope.addPopOver(jsonObj);
+          }
+          
+          if (val=='delete' && element)
+          {
+             element.self.remove();
+          }
+  
           }
         else
         {
           ngNotify.set('Changes Not Pushed, Please Log In', {
           type: 'error'
       });
-          if (edge)
-          {
-            alchemy.create.edges(edge);
-          }
         }
       
       },
@@ -143,112 +133,8 @@ $scope.EditPropertyHandlerIm=function(category,Id,handle)
     }
 };
 
-$scope.EditPropertyHandler = function(category,Id,handle)
-{
-  document.getElementById('SubmitProps').style.display='none';
-    var x=document.getElementById('editForm').childNodes;
-    var jsonObj={};
-    var iden;
-    var src;
-    var dst;
-    var dataCategory;
-    for (var i=0;i<x.length;i++)
-    {
-      if (x[i].childNodes.length>1 )
-      {
-      dataCategory=$(x[i]).data("category");
-      // console.log(dataCategory);
-      x[i].childNodes[2].disabled = true;
-      var val=x[i].childNodes[2].value;
-      var id=(x[i].childNodes[2].id).substring(6,(x[i].childNodes[2].id).length);
-      if (dataCategory=='node')
-      {
-        if (id=='id')
-        {
-          iden=val;
-        }
-        else
-        {
-          jsonObj[id]=val;
-        }
-      }
-      else
-      {
-        if (id=='source')
-        {
-          src=val;
-        }
-        else if (id=='target')
-        {
-          dst=val;
-        }
-        else
-        {
-          jsonObj[id]=val;
-        }
-      }
-      
-      }
-    }
-    var element;
-    if (dataCategory=='node')
-    {
-      element=alchemy._nodes[iden];
-    }
-    else
-    {
-      var element;
-      for (var i=0;i<alchemy._edges[Id].length;i++)
-      {
-        
-        if (alchemy._edges[Id][i]._properties['__weaver__handle__']==handle)
-        {
-          element=alchemy._edges[Id][i];
-          break;
-        }
-      }
-
-
-      // var edgeId="" + src + "-" +dst
-      // element=alchemy._edges[edgeId][0];
-    }
-    for (var key in jsonObj) 
-    {
-       element._properties[key]=jsonObj[key];
-    }
-    if (dataCategory=='node')
-    {
-
-     var img="";
-     var dict=element._properties;
-     for (var key in dict)
-     {
-        str=str+key+" : "+dict[key]+"<br>";
-        if ($scope.config.popOverImgElements.indexOf(key) > -1)
-        {
-          var url=$scope.config.imgPrependURL+dict[key];
-          img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
-          // console.log(url);
-        }
-        else if ($scope.config.popOverTextElements.indexOf(key) > -1)
-        {
-          img=img+key+" : "+dict[key]+"<br>";
-        }
-     }
-
-      $(document.getElementById('node-'+element._properties['id'])).data('bs.popover').options.content=img;
-    }
-    var query={}
-    query['type']='update';
-    query['category']=dataCategory;
-    query['props']=element._properties;
-    $rootScope.writeToLog(query,null);
-    
-};
-
 $scope.DeleteHandler=function(category,Id,handle)
 {
-  
   
   var iden="";
     var x=document.getElementById('editForm').childNodes;
@@ -263,34 +149,7 @@ $scope.DeleteHandler=function(category,Id,handle)
       x[i].childNodes[2].disabled = true;
       }
     }
-    // var elementProps;
-    //   if (category=='node')
-    //   {
-    //     node = alchemy.get.nodes(iden);
-    //     node.remove()
-    //   }
-    //   else
-    //   {
-    //     var element;
-    //     for (var i=0;i<alchemy._edges[Id].length;i++)
-    //     {
-          
-    //       if (alchemy._edges[Id][i]._properties['handle']==handle)
-    //       {
-    //         element=alchemy._edges[Id][i];
-    //         break;
-    //       }
-    //     }
-    //     element.remove();
-        
-    //   }
-    //   var query={}
-    //   query['type']='Delete';
-    //   query['category']='edge';
-    //   query['props']=elementProps;
-
-    //   $rootScope.writeToLog(query);
-    //   document.getElementById('insertStuff').innerHTML="";
+   
 };
 
     $scope.createEditor = function (sourceId) 
@@ -310,7 +169,6 @@ $scope.DeleteHandler=function(category,Id,handle)
     {
       var edges=[];
       var nodes=[];
-      // console.log(data);
       for (var i=0;i<data['edges'].length;i++)
       {
         if ($scope.inViewEdges.indexOf(data['edges'][i]['__weaver__handle__']) < 0)
@@ -379,11 +237,21 @@ $scope.DeleteHandler=function(category,Id,handle)
       }
       return data;
     };
+
+
+    $scope.isEmptyObj=function(obj) 
+    {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true;
+    }
+
+
     $scope.queryGraph=function()
     {
-      // console.log('query');
-      var childNode=document.getElementById('graph').childNodes[0];
-      childNode.parentNode.removeChild(childNode);
       $scope.inViewEdges=[];
       $scope.inViewNodes=[];
       var weaverGraphEndpoint = $scope.config.graphEndPoint;
@@ -397,25 +265,35 @@ $scope.DeleteHandler=function(category,Id,handle)
           }, 
           function(data) 
           {
-              console.log(data);
-              data=$scope.removeDuplicates(data)
-              // console.log(data);
-              var config=$scope.config;
-              config.dataSource=data;
-              // console.log(data);
+              
+              if (!$scope.isEmptyObj(data))
+              {
+                  var childNode=document.getElementById('graph').childNodes[0];
+                  childNode.parentNode.removeChild(childNode);
+                  data=$scope.removeDuplicates(data)
+                  var config=$scope.config;
+                  config.dataSource=data;
+                  alchemy = new Alchemy(config);
+                  for (var i=0;i<data['nodes'].length;i++)
+                  {
+                    $scope.addPopOver(data['nodes'][i]);
+                  }
+              }
+              else
+              {
+                var str='Either database connection is broken or node not exist';
+                ngNotify.set(str, {
+                type: 'error',
+                position:'top',
+                sticky: false,
+                html: true,
+                duration:1000
+                });
 
-              alchemy = new Alchemy(config);
-
-            for (var i=0;i<data['nodes'].length;i++)
-            {
-              $scope.addPopOver(data['nodes'][i]);
-            }
-            // console.log('hello');
-            // alchemy.conf.friction=0.7;
-
+              }
+              
             return false;
           });
-
     }
 
     $scope.initAlchemyConfig= function (config,graphId) {
@@ -423,8 +301,6 @@ $scope.DeleteHandler=function(category,Id,handle)
     config.edgeTypes = "caption";
     alchemy = new Alchemy(config);
     $scope.alchemy=alchemy
-
-// document.getElementById('test')
 
     var str='The current system is in beta. Use it carefully';
     ngNotify.set(str, {
@@ -437,23 +313,11 @@ $scope.DeleteHandler=function(category,Id,handle)
     return config;
   };
 
-
-
-
-
   $scope.addKeyValNode=function(val)
   {
-    // $scope.editElementProperties[val]="";
-    // console.log(val);
     $scope.editElementProperties[val]="";
     $scope.refreshContent();
     $scope.keyValPairHandle="";
-    // var text='<div class="form-group"><div class="col-xs-6"><input  data-identity="added" class="form-control keyVal Added" placeholder="Key"> </div><div class="col-xs-6"><input  data-identity="added" class="form-control keyVal Added" placeholder="Value"></div></div>';
-    // var d = document.createElement('div');
-    // d.innerHTML = text;
-    // var element=d.firstChild;
-    // document.getElementById('modalFormNode').appendChild(element); 
-  
   };
 
   $scope.addPopOver=function(elem)
@@ -468,7 +332,6 @@ $scope.DeleteHandler=function(category,Id,handle)
         {
           var url=$scope.config.imgPrependURL+dict[key];
           img = img+  '<div id = \"image"><img src = "'+url+'" style="width:200px;" /></div>';
-          // console.log(url);
         }
         else if ($scope.config.popOverTextElements.indexOf(key) > -1)
         {
@@ -493,84 +356,21 @@ $scope.DeleteHandler=function(category,Id,handle)
   {
     return murmurHash3.x86.hash32(str);
   };
-  $scope.AddEdges=function()
-  {
-    var jsonObj = {};
-    var x=document.getElementById('modalFormEdge').getElementsByClassName('keyVal');
-    for (var i=0;i<x.length;i++)
-    {
-       if (i%2==0)
-        {
-          var key=x[i].value;
-          key=key.split(' ').join('_');
-          jsonObj[key]=x[i+1].value
-        }
-    }
-    var edge=JSON.parse(JSON.stringify(jsonObj));
-    
-    var edgeId="" + edge.source + "-" +edge.target;
-    if (alchemy.get.edges(edgeId).api.length==1)
-    {
-      ;
-    }
-    else
-    {
-      console.log(alchemy.create.edges(edge));
-    }
-
-    var query={};
-    query['type']='create'
-    query['category']='edge'
-    query['props']=jsonObj
-    $rootScope.writeToLog(query,null)
-
-  document.getElementById('modalFormEdge').innerHTML='<div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="node" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="edge" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div><div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="__weaver__handle__" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div>'
-  };
-  $scope.AddNodes=function()
-  {
-    var jsonObj = {};
-    var x=document.getElementById('modalFormNode').getElementsByClassName('keyVal');
-    for (var i=0;i<x.length;i++)
-    {
-      if (i%2==0)
-      {
-        var key=x[i].value;
-        key=key.split(' ').join('_');
-        jsonObj[key]=x[i+1].value
-      }
-    }
-    jsonObj['id']=$scope.hashFn(jsonObj['__weaver__handle__']);
-    jsonObj['root']=true;
-    var node=JSON.parse(JSON.stringify(jsonObj));
-    alchemy.create.nodes(node);
-    document.getElementById('modalFormNode').innerHTML='<div class="form-group"><div class="col-xs-6"><input  class="form-control keyVal" value="__weaver__handle__" disabled></div><div class="col-xs-6"><input  class="form-control keyVal" placeholder="Value"required></div></div>'
-    $scope.addPopOver(jsonObj);
-    
-    var query={};
-    query['type']='create'
-    query['category']='node'
-    query['props']=jsonObj
-    $rootScope.writeToLog(query,null)
-
-  };
-
-
+ 
   $scope.CreateNode=function(node)
   {
-    // console.log(node.src);
     var jsonObj = {};
     jsonObj['__weaver__handle__']=node.src;
 
     jsonObj['id']=$scope.hashFn(jsonObj['__weaver__handle__']);
     var nodeObj=JSON.parse(JSON.stringify(jsonObj));
-    alchemy.create.nodes(nodeObj);
-    $scope.addPopOver(jsonObj);
+    
 
     var query={};
     query['type']='create'
     query['category']='node'
     query['props']=jsonObj
-    $rootScope.writeToLog(query,null)
+    $rootScope.writeToLog(query,nodeObj,jsonObj,'node')
 
   };
 
@@ -587,13 +387,7 @@ $scope.DeleteHandler=function(category,Id,handle)
     query['type']='create'
     query['category']='edge'
     query['props']=jsonObj
-    $rootScope.writeToLog(query,edge)
-    
-    
-    
-
-
-
+    $rootScope.writeToLog(query,edge,null,'edge')
     
   };
 
@@ -644,26 +438,25 @@ $scope.SaveProperties=function()
     query['category']=$scope.editElementType;
     query['props']=$scope.editElementProperties;
     // console.log($scope.editElementProperties);
-    $rootScope.writeToLog(query,null);
+    $rootScope.writeToLog(query,null,null,null);
 }
 
 $scope.deleteEdges=function(element)
 {
-  
-  element.self.remove()
+  element.self.remove();
 }
 
 
 $scope.deleteEdge=function(element)
 {
   var props=element.self._properties;
-  element.self.remove();
+ 
 
   var query={}
   query['type']='Delete';
   query['category']='edge';
   query['props']=props;
-  $rootScope.writeToLog(query,null);
+  $rootScope.writeToLog(query,element,null,'delete');
   document.getElementById('insertStuff').innerHTML="";
   $scope.inViewEdges.splice($scope.inViewEdges.indexOf(element.self._properties['__weaver__handle__']),1);
   // console.log(element.self._properties['handle'])
@@ -777,30 +570,7 @@ $scope.isVisible=function(key,type)
           // console.log(data['nodes'][i]);
         }
           
-      // if (alchemy.get.nodes(data['nodes'][i].id).api.length==1)
-      //     {
-      //       ;
-      //     }
-      //     else
-      //     {
-      //       alchemy.create.nodes(data['nodes'][i]);
-      //       $scope.addPopOver(data['nodes'][i]);
-      //     }
-      //   }
-
-        // for (var i=0;i<data['edges'].length;i++)
-        // {
-        //   var edgeId="" + data['edges'][i].source + "-" +data['edges'][i].target;
-        //   if (alchemy.get.edges(edgeId).api.length==1)
-        //   {
-        //     ;
-        //   }
-        //   else
-        //   {
-
-        //     alchemy.create.edges(data['edges'][i]);
-        //   }
-        // }
+ 
         alchemy.stats.nodeStats();
         alchemy.stats.edgeStats();
 

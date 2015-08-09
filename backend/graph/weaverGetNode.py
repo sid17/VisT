@@ -1,7 +1,10 @@
 from weaver import client
 import json
 from auth import APPCONFIGPARAMS
-c = client.Client(APPCONFIGPARAMS['weaverIP'],int(APPCONFIGPARAMS['weaverPort']))
+try:
+    c = client.Client(APPCONFIGPARAMS['weaverIP'],int(APPCONFIGPARAMS['weaverPort']))
+except:
+    c=None
 def dictElement(d):
     for key,val in d.iteritems():
         return key
@@ -30,6 +33,9 @@ def ProcessEdgeData(edge):
     return props
 
 def getNodeEdge(name='ayush',num=5):
+    if not c:
+        print 'Client nor found'
+        return False
     retVal=dict()
     retVal['nodes']=list()
     retVal['edges']=list()
